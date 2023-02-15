@@ -20,7 +20,7 @@ import image from "./viinikuva.png";
 const RouteApp = () => {
     return (
         <Router>
-            <Row name="yläpalkki">
+            
                 <Navbar bg="light" expand="lg">
                     <Container>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -56,12 +56,12 @@ const RouteApp = () => {
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
-            </Row>
-            <Row name="netti sivut">
+            
+            
                 <div
                     style={{
                         backgroundImage: `url(${image})`,
-                        height: "100vh",
+                        minHeight: "100vh",
                         backgroundRepeat: "repeat",
                         backgroundSize: "contain",
                     }}
@@ -80,14 +80,12 @@ const RouteApp = () => {
                         </Routes>
                     </div>
                 </div>
-            </Row>
-            <Row name="alapalkki">
+           
                 <Navbar bg="secondary" expand="lg">
                     <Container>
                         <Navbar.Brand href="/">Maistelu_PRO</Navbar.Brand>
                     </Container>
                 </Navbar>
-            </Row>
         </Router>
     );
 };
