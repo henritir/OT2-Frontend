@@ -4,7 +4,7 @@ const Parhaimmat = () => {
 
     const [viinit, setViinit] = useState([])
 
-    /*
+    
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan viinit tietokannasta
     useEffect(() => {
@@ -51,7 +51,7 @@ const Parhaimmat = () => {
     return (
         <div>
             <h1>Parhaat viinit</h1>
-            <table class="table table-dark">
+            <table className="table table-dark">
                 <thead>
                     <tr>
                         <th>Nimi</th>
@@ -79,12 +79,12 @@ const Parhaimmat = () => {
             </table>
         </div>
     );
-    */
+    /*
    return (
     <div>
         <h1>Parhaat viinit</h1>
     </div>
-   );
+   );*/
 };
 
 export { Parhaimmat };
