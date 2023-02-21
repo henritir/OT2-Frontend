@@ -13,12 +13,12 @@ const Parhaimmat = () => {
             let response = await fetch("http://localhost:3001/viinit");
             console.log("fetch called ...", response);
             let c = await response.json();
-            console.log("res: " + c);
+            //console.log("res: " + c);
             setViinit(c);
             
         }
         fetchViinit();
-        console.log(JSON.stringify(viinit))
+        //console.log(JSON.stringify(viinit))
 
     }, []);
 
@@ -26,7 +26,7 @@ const Parhaimmat = () => {
     const vTable = viinit.map((s, i) => {
         return (
 
-            <tr key={s.id} id={s.id}>
+            <tr key={i} id={s.id}>
                 <td>{s.nimi}</td>
                 <td>{s.valmistaja}</td>
                 <td>{s.pullokoko}</td>
