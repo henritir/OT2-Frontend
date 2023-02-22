@@ -76,8 +76,10 @@ const RouteApp = () => {
                 .then((result) => kirjautuminen(result))
                 .catch((error) => console.log("error", error));
         };
-
-        fetchKirjaudu();
+        if(salasana){
+            fetchKirjaudu();
+        }
+        
     }, [kirjaudu]);
 
     return (
