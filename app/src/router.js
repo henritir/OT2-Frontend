@@ -97,9 +97,20 @@ const RouteApp = () => {
                         </Nav>
 
                         {kirjautunut ? (
-                            <Button onClick={() => kirjauduUlos()}>
+                            <div>
+                                <Row>
+                                <Col xs='auto'>
+                                        <p>{kayttajanimi}</p>
+                                    </Col>
+                                    <Col md='auto'>
+                                    <Button onClick={() => kirjauduUlos()}>
                                 Kirjaudu ulos
                             </Button>
+
+                                    </Col>
+                            
+                            </Row>
+                            </div>
                         ) : (
                             <Form className="d-flex me-1" onSubmit={onSubmit}>
                                 <Row>
@@ -157,16 +168,17 @@ const RouteApp = () => {
                 <div style={{ textAlign: "center" }}>
                     <Routes>
                         <Route path="/" element={<Etusivu />} />
+                        <Route
+                                path="/rekisterointi"
+                                element={<Rekisterointi />}
+                            />
                         <Route element={<Suojattu kirjautunut={kirjautunut} />}>
                             <Route path="/profiili" element={<Profiili />} />
                             <Route
                                 path="/parhaimmat"
                                 element={<Parhaimmat />}
                             />
-                            <Route
-                                path="/rekisterointi"
-                                element={<Rekisterointi />}
-                            />
+                            
                             <Route path="arvostele" element={<Arvostele />} />
                         </Route>
                         <Route path="*" element={<Navigate to="/" />} />
