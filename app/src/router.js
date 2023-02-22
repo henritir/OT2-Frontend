@@ -44,9 +44,7 @@ const RouteApp = () => {
         if (result === kayttajanimi + " on kirjautunut sisään") {
             window.localStorage.setItem("kirjautunut", "true");
             setKirjautunut("true");
-        } else {
-            window.localStorage.removeItem("kirjautunut");
-        }
+        } 
     };
 
     const kirjauduUlos = () => {
