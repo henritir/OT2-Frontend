@@ -99,17 +99,15 @@ const RouteApp = () => {
                         {kirjautunut ? (
                             <div>
                                 <Row>
-                                <Col xs='auto'>
+                                    <Col xs="auto">
                                         <p>{kayttajanimi}</p>
                                     </Col>
-                                    <Col md='auto'>
-                                    <Button onClick={() => kirjauduUlos()}>
-                                Kirjaudu ulos
-                            </Button>
-
+                                    <Col md="auto">
+                                        <Button onClick={() => kirjauduUlos()}>
+                                            Kirjaudu ulos
+                                        </Button>
                                     </Col>
-                            
-                            </Row>
+                                </Row>
                             </div>
                         ) : (
                             <Form className="d-flex me-1" onSubmit={onSubmit}>
@@ -169,16 +167,16 @@ const RouteApp = () => {
                     <Routes>
                         <Route path="/" element={<Etusivu />} />
                         <Route
-                                path="/rekisterointi"
-                                element={<Rekisterointi />}
-                            />
+                            path="/rekisterointi"
+                            element={<Rekisterointi />}
+                        />
                         <Route element={<Suojattu kirjautunut={kirjautunut} />}>
                             <Route path="/profiili" element={<Profiili />} />
                             <Route
                                 path="/parhaimmat"
                                 element={<Parhaimmat />}
                             />
-                            
+
                             <Route path="arvostele" element={<Arvostele />} />
                         </Route>
                         <Route path="*" element={<Navigate to="/" />} />
@@ -189,6 +187,23 @@ const RouteApp = () => {
             <Navbar bg="secondary" expand="lg">
                 <Container>
                     <Navbar.Brand href="/">Maistelu_PRO</Navbar.Brand>
+                    <Form>
+                        <Col xs="auto">
+                            <Navbar.Text>Henri Tirkkonen</Navbar.Text>
+                        </Col>
+
+                        <Col xs="auto">
+                            <Navbar.Text>Aatu Paljakka</Navbar.Text>
+                        </Col>
+
+                        <Col xs="auto">
+                            <Navbar.Text>Santeri Leinonen</Navbar.Text>
+                        </Col>
+
+                        <Col xs="auto">
+                            <Navbar.Text>Laura Engblom</Navbar.Text>
+                        </Col>
+                    </Form>
                 </Container>
             </Navbar>
         </Router>
