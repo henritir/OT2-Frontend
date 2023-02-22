@@ -163,6 +163,10 @@ const RouteApp = () => {
                                 path="/parhaimmat"
                                 element={<Parhaimmat />}
                             />
+                            <Route
+                                path="/rekisterointi"
+                                element={<Rekisterointi />}
+                            />
                             <Route path="arvostele" element={<Arvostele />} />
                         </Route>
                         <Route path="*" element={<Navigate to="/" />} />
