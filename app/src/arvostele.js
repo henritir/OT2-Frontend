@@ -1,12 +1,14 @@
 import React, { useEffect, useState, } from 'react'
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Box from "@mui/material/Box";
 import "./App.css";
 
 const Arvostele = () => {
     const [value, setValue] = useState()
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState();
     const [viinit, setViinit] = useState([])
+    //let cv = viinit.map(e => e.nimi)
 
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan viinit tietokannasta
@@ -21,10 +23,11 @@ const Arvostele = () => {
         fetchViinit();
     }, []);
 
+    // <div>{`value: ${value !== undefined || null ? `'${value.viini_id}'` : 'null'}`}</div>
+
     return (
         <div>
             <h1>Arvioi viini</h1>
-            <div>{`value: ${value !== null ? `'${value}'` : 'null'}`}</div>
             <div>{`inputValue: '${inputValue}'`}</div>
             <div style={{display: 'flex',  justifyContent:'center'}}>
             <Autocomplete
@@ -39,9 +42,15 @@ const Arvostele = () => {
                     setInputValue(newInputValue);
                 }}
                 id="combo-box-demo"
-                options={viinit.map(e => e.nimi)}
+                getOptionLabel={(option) => option.nimi}
+                options={viinit}
                 sx={{ width: 600 }}
-                renderInput={(params) => <TextField {...params} key={params} label="Hae Viiniä" />}
+                renderOption={(props, option) => (
+                    <Box component="li" {...props} key={option.viini_id}>
+                      {option.nimi}
+                    </Box>
+                  )}
+                renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
             />
             </div>
         </div>
