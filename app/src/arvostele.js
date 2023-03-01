@@ -1,6 +1,7 @@
 import React, { useEffect, useState, } from 'react'
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import "./App.css";
 
 const Arvostele = () => {
     const [value, setValue] = useState()
@@ -26,7 +27,9 @@ const Arvostele = () => {
             <h1>Arvioi viini</h1>
             <div>{`value: ${value !== null ? `'${value}'` : 'null'}`}</div>
             <div>{`inputValue: '${inputValue}'`}</div>
+            <div style={{display: 'flex',  justifyContent:'center'}}>
             <Autocomplete
+                className='Autocomplete'
                 disablePortal
                 value={value}
                 onChange={(event, newValue) => {
@@ -41,6 +44,7 @@ const Arvostele = () => {
                 sx={{ width: 600 }}
                 renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
             />
+            </div>
         </div>
     );
 };
