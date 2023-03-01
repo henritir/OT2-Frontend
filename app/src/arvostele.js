@@ -7,7 +7,6 @@ const Arvostele = () => {
     const [value, setValue] = useState()
     const [inputValue, setInputValue] = useState('');
     const [viinit, setViinit] = useState([])
-    let cv = viinit.map(e => e.nimi)
 
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan viinit tietokannasta
@@ -40,9 +39,9 @@ const Arvostele = () => {
                     setInputValue(newInputValue);
                 }}
                 id="combo-box-demo"
-                options={cv}
+                options={viinit.map(e => e.nimi)}
                 sx={{ width: 600 }}
-                renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
+                renderInput={(params) => <TextField {...params} key={params} label="Hae Viiniä" />}
             />
             </div>
         </div>
