@@ -2,7 +2,10 @@ import React, { useEffect, useState, } from 'react'
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from "@mui/material/Box";
+import Button from "react-bootstrap/Button";
+import Slider from '@mui/material/Slider';
 import "./App.css";
+import { padding } from '@mui/system';
 
 const Arvostele = () => {
     const [value, setValue] = useState()
@@ -24,35 +27,63 @@ const Arvostele = () => {
     }, []);
 
     // <div>{`value: ${value !== undefined || null ? `'${value.viini_id}'` : 'null'}`}</div>
+    const arvosteluikkuna = () => {
+        if (value !== undefined || null) {
+            console.log(value);
+        }
+    };
 
     return (
         <div>
-            <h1>Arvioi viini</h1>
+            <h1>Arvioi viini asteikolla 1-5</h1>
             <div>{`inputValue: '${inputValue}'`}</div>
-            <div style={{display: 'flex',  justifyContent:'center'}}>
-            <Autocomplete
-                className='Autocomplete'
-                disablePortal
-                value={value}
-                onChange={(event, newValue) => {
-                    setValue(newValue);
-                }}
-                inputValue={inputValue}
-                onInputChange={(event, newInputValue) => {
-                    setInputValue(newInputValue);
-                }}
-                id="combo-box-demo"
-                getOptionLabel={(option) => option.nimi}
-                options={viinit}
-                sx={{ width: 600 }}
-                renderOption={(props, option) => (
-                    <Box component="li" {...props} key={option.viini_id}>
-                      {option.nimi}
-                    </Box>
-                  )}
-                renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
-            />
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Autocomplete
+                    className='Autocomplete'
+                    disablePortal
+                    value={value}
+                    onChange={(event, newValue) => {
+                        setValue(newValue);
+                    }}
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => {
+                        setInputValue(newInputValue);
+                    }}
+                    id="combo-box-demo"
+                    getOptionLabel={(option) => option.nimi}
+                    options={viinit}
+                    sx={{ width: 600 }}
+                    renderOption={(props, option) => (
+                        <Box component="li" {...props} key={option.viini_id}>
+                            {option.nimi}
+                        </Box>
+                    )}
+                    renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
+                />
             </div>
+            {value ? (<div>
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                    <Box width={300}>
+                        <Slider
+                            size="large"
+                            defaultValue={20}
+                            aria-label="Small"
+                            valueLabelDisplay="auto"
+                            step={1}
+                            marks
+                            min={1}
+                            max={5}
+                            color="secondary"
+                        />
+                    </Box>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                    <Button onClick={() => arvosteluikkuna()}>
+                        Arvostele
+                    </Button>
+                </div>
+            </div>) : (<div><h1>Valitse viini että voit arvostella</h1></div>)}
+
         </div>
     );
 };
