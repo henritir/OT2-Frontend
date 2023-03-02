@@ -11,6 +11,7 @@ const Arvostele = () => {
     const [value, setValue] = useState()
     const [inputValue, setInputValue] = useState();
     const [viinit, setViinit] = useState([])
+    const [sliderValue, setSlidervalue] = useState(1);
     //let cv = viinit.map(e => e.nimi)
 
     // Tämä effect suoritetaan VAIN yhden kerran
@@ -29,7 +30,8 @@ const Arvostele = () => {
     // <div>{`value: ${value !== undefined || null ? `'${value.viini_id}'` : 'null'}`}</div>
     const arvosteluikkuna = () => {
         if (value !== undefined || null) {
-            console.log(value);
+            console.log("val: " + JSON.stringify(value));
+            console.log("sliderVal: " + sliderValue);
         }
     };
 
@@ -41,13 +43,9 @@ const Arvostele = () => {
                 <Autocomplete
                     className='Autocomplete'
                     disablePortal
-                    value={value}
+                    value={value ?? null}
                     onChange={(event, newValue) => {
                         setValue(newValue);
-                    }}
-                    inputValue={inputValue}
-                    onInputChange={(event, newInputValue) => {
-                        setInputValue(newInputValue);
                     }}
                     id="combo-box-demo"
                     getOptionLabel={(option) => option.nimi}
@@ -66,7 +64,7 @@ const Arvostele = () => {
                     <Box width={300}>
                         <Slider
                             size="large"
-                            defaultValue={20}
+                            defaultValue={1}
                             aria-label="Small"
                             valueLabelDisplay="auto"
                             step={1}
@@ -74,6 +72,11 @@ const Arvostele = () => {
                             min={1}
                             max={5}
                             color="secondary"
+                            value={sliderValue ?? null}
+                            onChange={(event, newValue) => {
+                                setSlidervalue(newValue);
+                                //console.log(sliderValue);
+                            }}
                         />
                     </Box>
                 </div>
