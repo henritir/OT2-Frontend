@@ -21,35 +21,27 @@ import { Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 
 const RouteApp = () => {
-    const [kayttajanimi, setKayttajanimi] = useState(
-        window.localStorage.getItem("kayttajanimi")
-    );
-    const [salasana, setSalasana] = useState(
-        window.localStorage.getItem("salasana")
-    );
+    const [kayttajanimi, setKayttajanimi] = useState("");
+    const [salasana, setSalasana] = useState("");
     const [kirjautunut, setKirjautunut] = useState(
         window.localStorage.getItem("kirjautunut")
     );
     const [kirjaudu, setKirjaudu] = useState(false);
 
-    const onSubmit = () => {
-        window.localStorage.setItem("kayttajanimi", kayttajanimi);
-        window.localStorage.setItem("salasana", salasana);
+    const kirjauduClicked = () => {
         setKirjaudu(!kirjaudu);
     };
 
     const kirjautuminen = (result) => {
-        window.localStorage.removeItem("salasana");
-        // console.log(result);
-        if (result === kayttajanimi + " on kirjautunut sisään") {
-            window.localStorage.setItem("kirjautunut", "true");
-            setKirjautunut("true");
-        } 
+        console.log(result);
+        window.localStorage.setItem("kirjautunut", kayttajanimi);
+        setKirjautunut(kayttajanimi);
+
     };
 
     const kirjauduUlos = () => {
+        setKirjautunut("");
         window.localStorage.clear();
-        setKirjautunut(null);
     };
 
     useEffect(() => {
@@ -76,10 +68,13 @@ const RouteApp = () => {
                 .then((result) => kirjautuminen(result))
                 .catch((error) => console.log("error", error));
         };
-        if(salasana){
+
+        if (salasana) {
             fetchKirjaudu();
+            setSalasana("");
+            setKayttajanimi("");
         }
-        
+
     }, [kirjaudu]);
 
     return (
@@ -99,22 +94,23 @@ const RouteApp = () => {
                         {kirjautunut ? (
                             <div>
                                 <Row>
-                                <Col xs='auto'>
-                                        <p>{kayttajanimi}</p>
+                                    <Col xs='auto'>
+                                        <p>{kirjautunut}</p>
                                     </Col>
                                     <Col md='auto'>
-                                    <Button onClick={() => kirjauduUlos()}>
-                                Kirjaudu ulos
-                            </Button>
+                                        <Button onClick={() => kirjauduUlos()}>
+                                            Kirjaudu ulos
+                                        </Button>
 
                                     </Col>
-                            
-                            </Row>
+
+                                </Row>
                             </div>
                         ) : (
-                            <Form className="d-flex me-1" onSubmit={onSubmit}>
+                            <div>
+
                                 <Row>
-                                    <Col xs="auto">
+                                    <Col md={3}>
                                         <Form.Control
                                             onChange={(e) =>
                                                 setKayttajanimi(e.target.value)
@@ -122,9 +118,10 @@ const RouteApp = () => {
                                             type="text"
                                             placeholder="käyttäjänimi"
                                             htmlSize="8"
+                                            value={kayttajanimi}
                                         />
                                     </Col>
-                                    <Col xs="auto">
+                                    <Col md={3}>
                                         <Form.Control
                                             onChange={(e) =>
                                                 setSalasana(e.target.value)
@@ -132,26 +129,29 @@ const RouteApp = () => {
                                             type="password"
                                             placeholder="salasana"
                                             htmlSize="8"
+                                            value={salasana}
                                         />
                                     </Col>
+                                    <Col md={3}>
+                                        <Button
+                                            variant="outline-success"
+                                            onClick={() => kirjauduClicked()}
+                                        >
+                                            Kirjaudu
+                                        </Button>
+                                    </Col>
+                                    <Col md={3}>
+                                        <Button
+                                            variant="outline-success"
+                                            href="/rekisterointi"
+                                        >
+                                            Rekisteröidy
+                                        </Button>
+                                    </Col>
                                 </Row>
-                                <Col xs="auto">
-                                    <Button
-                                        variant="outline-success"
-                                        type="submit"
-                                    >
-                                        Kirjaudu
-                                    </Button>
-                                </Col>
-                                <Col xs="auto">
-                                    <Button
-                                        variant="outline-success"
-                                        href="/rekisterointi"
-                                    >
-                                        Rekisteröidy
-                                    </Button>
-                                </Col>
-                            </Form>
+
+                            </div>
+
                         )}
                     </Navbar.Collapse>
                 </Container>
@@ -169,16 +169,16 @@ const RouteApp = () => {
                     <Routes>
                         <Route path="/" element={<Etusivu />} />
                         <Route
-                                path="/rekisterointi"
-                                element={<Rekisterointi />}
-                            />
+                            path="/rekisterointi"
+                            element={<Rekisterointi />}
+                        />
                         <Route element={<Suojattu kirjautunut={kirjautunut} />}>
                             <Route path="/profiili" element={<Profiili />} />
                             <Route
                                 path="/parhaimmat"
                                 element={<Parhaimmat />}
                             />
-                            
+
                             <Route path="arvostele" element={<Arvostele />} />
                         </Route>
                         <Route path="*" element={<Navigate to="/" />} />
