@@ -19,14 +19,15 @@ import { Rekisterointi } from "./rekisterointi";
 import image from "./viinikuva.png";
 import { Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { useCookies } from 'react-cookie';
 
 const RouteApp = () => {
     const [kayttajanimi, setKayttajanimi] = useState("");
     const [salasana, setSalasana] = useState("");
-    const [kirjautunut, setKirjautunut] = useState(
-        window.localStorage.getItem("kirjautunut")
-    );
+    const [cookies, setCookie, removeCookie] = useCookies(['user','token']);
+    const [kirjautunut, setKirjautunut] = useState(cookies.user);
     const [kirjaudu, setKirjaudu] = useState(false);
+    
 
     const kirjauduClicked = () => {
         setKirjaudu(!kirjaudu);
@@ -34,14 +35,19 @@ const RouteApp = () => {
 
     const kirjautuminen = (result) => {
         console.log(result);
-        window.localStorage.setItem("kirjautunut", kayttajanimi);
-        setKirjautunut(kayttajanimi);
+        if (result.includes(kayttajanimi)) {
+            setCookie('user',kayttajanimi);
+            setCookie('token',result.slice(kayttajanimi.length+31))
+            setKirjautunut(kayttajanimi);
+        }
 
     };
 
     const kirjauduUlos = () => {
         setKirjautunut("");
-        window.localStorage.clear();
+        removeCookie('user');
+        removeCookie('token');
+        
     };
 
     useEffect(() => {
@@ -117,7 +123,7 @@ const RouteApp = () => {
                                             }
                                             type="text"
                                             placeholder="käyttäjänimi"
-                                            htmlSize="8"
+                                            htmlSize="9"
                                             value={kayttajanimi}
                                         />
                                     </Col>
