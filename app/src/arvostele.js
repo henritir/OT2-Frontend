@@ -6,13 +6,15 @@ import Button from "react-bootstrap/Button";
 import Slider from '@mui/material/Slider';
 import "./App.css";
 import { padding } from '@mui/system';
+import { useCookies } from 'react-cookie';
 
 const Arvostele = () => {
     const [value, setValue] = useState()
     const [inputValue, setInputValue] = useState();
     const [viinit, setViinit] = useState([])
     const [sliderValue, setSlidervalue] = useState(1);
-    //let cv = viinit.map(e => e.nimi)
+    const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']);
+
 
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan viinit tietokannasta
@@ -27,11 +29,35 @@ const Arvostele = () => {
         fetchViinit();
     }, []);
 
-    // <div>{`value: ${value !== undefined || null ? `'${value.viini_id}'` : 'null'}`}</div>
+    const fetchArvostelu = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "kayttajanimi": cookies.user,
+            "arvio": sliderValue,
+            "viini_id": value.viini_id
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:3001/arvosteleViini", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    };
+
     const arvosteluikkuna = () => {
         if (value !== undefined || null) {
-            console.log("val: " + JSON.stringify(value));
-            console.log("sliderVal: " + sliderValue);
+            //console.log("val: " + JSON.stringify(value));
+            //console.log("sliderVal: " + sliderValue);
+            //console.log(value.viini_id);
+            fetchArvostelu();
         }
     };
 
