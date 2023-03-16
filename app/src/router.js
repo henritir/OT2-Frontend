@@ -20,14 +20,16 @@ import image from "./viinikuva.png";
 import { Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useCookies } from 'react-cookie';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Muokkaus } from "./profiilin_muokkaus";
 
 const RouteApp = () => {
     const [kayttajanimi, setKayttajanimi] = useState("");
     const [salasana, setSalasana] = useState("");
-    const [cookies, setCookie, removeCookie] = useCookies(['user','token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']);
     const [kirjautunut, setKirjautunut] = useState(cookies.user);
     const [kirjaudu, setKirjaudu] = useState(false);
-    
+
 
     const kirjauduClicked = () => {
         setKirjaudu(!kirjaudu);
@@ -36,8 +38,8 @@ const RouteApp = () => {
     const kirjautuminen = (result) => {
         console.log(result);
         if (result.includes(kayttajanimi)) {
-            setCookie('user',kayttajanimi);
-            setCookie('token',result.slice(kayttajanimi.length+31))
+            setCookie('user', kayttajanimi);
+            setCookie('token', result.slice(kayttajanimi.length + 31))
             setKirjautunut(kayttajanimi);
         }
 
@@ -47,7 +49,7 @@ const RouteApp = () => {
         setKirjautunut("");
         removeCookie('user');
         removeCookie('token');
-        
+
     };
 
     useEffect(() => {
@@ -107,6 +109,14 @@ const RouteApp = () => {
                                         <Button onClick={() => kirjauduUlos()}>
                                             Kirjaudu ulos
                                         </Button>
+
+                                    </Col>
+                                    <Col>
+                                        <Button href="/muokkaa">
+                                        <SettingsIcon/>
+
+                                        </Button>
+                                       
 
                                     </Col>
 
@@ -180,6 +190,7 @@ const RouteApp = () => {
                         />
                         <Route element={<Suojattu kirjautunut={kirjautunut} />}>
                             <Route path="/profiili" element={<Profiili />} />
+                            <Route path="/muokkaa" element={<Muokkaus token={cookies.token}/>}/>
                             <Route
                                 path="/parhaimmat"
                                 element={<Parhaimmat />}

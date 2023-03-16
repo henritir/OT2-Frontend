@@ -4,6 +4,8 @@ npm install react-router-dom
 npm install react-bootstrap bootstrap
 npm install @mui/material @emotion/react @emotion/styled
 npm install react-cookie
+npm install @mui/icons-material
+
 
 
 # Getting Started with Create React App
