@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from "@mui/material/Box";
 import Button from "react-bootstrap/Button";
 import Slider from '@mui/material/Slider';
-import {Button as muiButton} from '@mui/material/Button';
+import { Button as muiButton } from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -66,6 +66,29 @@ const Arvostele = () => {
             .catch(error => console.log('error', error));
     };
 
+    const fetchMuutaArvostelu = async () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "kayttajanimi": cookies.user,
+            "arvio": sliderValue,
+            "viini_id": value.viini_id
+        });
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:3001/muokkaa_arvostelu", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+
     const arvostelebtn = () => {
         if ((value !== undefined || null) && (joArvosteltu !== true)) {
             //console.log("val: " + JSON.stringify(value));
@@ -77,7 +100,14 @@ const Arvostele = () => {
 
     const suljeDialogi = () => {
         setJoArvosteltu(false);
-      };
+    };
+
+    const suljeDialogiJaMuutaArvio = () => {
+        setJoArvosteltu(false);
+        //console.log(sliderValue);
+        //console.log("val.viini_id: ", value.viini_id);
+        fetchMuutaArvostelu();
+    };
 
     return (
         <div>
@@ -145,10 +175,33 @@ const Arvostele = () => {
                             <DialogContentText id="alert-dialog-description">
                                 Haluatko muokata arvosteluasi?
                             </DialogContentText>
+                            <p>Viinin nimi: {value.nimi}</p>
+                            <p>arvio: </p>
+                            <br />
+                            <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                                <Box width={300}>
+                                    <Slider
+                                        size="large"
+                                        defaultValue={1}
+                                        aria-label="Small"
+                                        valueLabelDisplay="auto"
+                                        step={1}
+                                        marks
+                                        min={1}
+                                        max={5}
+                                        color="secondary"
+                                        value={sliderValue ?? null}
+                                        onChange={(event, newValue) => {
+                                            setSlidervalue(newValue);
+                                            //console.log(sliderValue);
+                                        }}
+                                    />
+                                </Box>
+                            </div>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={suljeDialogi}>Sulje</Button>
-                            <Button onClick={suljeDialogi}>Muuta arvosteluasi</Button>
+                            <Button onClick={suljeDialogiJaMuutaArvio}>Muuta arvosteluasi</Button>
                         </DialogActions>
                     </Dialog>
                 </div>) : (<div><p>joarvosteltu false</p></div>)}
