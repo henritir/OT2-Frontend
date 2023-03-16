@@ -18,28 +18,26 @@ import { padding } from '@mui/system';
 import { useCookies } from 'react-cookie';
 
 const Arvostele = () => {
-    const [value, setValue] = useState()
-    const [inputValue, setInputValue] = useState();
-    const [viinit, setViinit] = useState([])
-    const [sliderValue, setSlidervalue] = useState(1);
-    const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']);
-    const [joArvosteltu, setJoArvosteltu] = useState(false);
-    const [openSnackBar, setOpenSnackBar] = useState(false);
+    const [value, setValue] = useState() // Autocompleten value, valitun viinin json-objekti
+    const [viinit, setViinit] = useState([]) // Taulukko viineille 
+    const [sliderValue, setSlidervalue] = useState(1); // Sliderin value, 1-5
+    const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']); // Selaimen keksit
+    const [joArvosteltu, setJoArvosteltu] = useState(false); // useState, joka laukaisee popup Dialog-komponentin jos valittua viiniä yrittää arvostella toista kertaa
+    const [openSnackBar, setOpenSnackBar] = useState(false); //  useState, joka laukaisee popup SnackBar-komponentin jos viinin arvostelu onnistuu
 
 
-    // Tämä effect suoritetaan VAIN yhden kerran
-    //haetaan viinit tietokannasta
+
+    // Hakee viinit tietokannasta, tämä effect suoritetaan VAIN yhden kerran
     useEffect(() => {
         const fetchViinit = async () => {
-            console.log("Fetching..");
             let response = await fetch("http://localhost:3001/viinit/nimet");
-            console.log("fetch called ...", response);
             let c = await response.json();
             setViinit(c);
         }
         fetchViinit();
     }, []);
 
+    // Vie arvostelun tietokantaan
     const fetchArvostelu = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -59,17 +57,17 @@ const Arvostele = () => {
 
         fetch("http://localhost:3001/arvosteleViini", requestOptions)
             .then(response => {
-                console.log('response', response.status)
                 if (response.status === 403) {
-                    console.log("bingo");
                     setJoArvosteltu(true);
                 } else {
                     setJoArvosteltu(false);
+                    setOpenSnackBar(true);
                 }
             })
             .catch(error => console.log('error', error));
     };
 
+    // Vie arvostelun muutoksen tietokantaan
     const fetchMuutaArvostelu = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -88,32 +86,34 @@ const Arvostele = () => {
         };
 
         fetch("http://localhost:3001/muokkaa_arvostelu", requestOptions)
-            .then(response => response.text())
+            .then(response => {
+                if (response.status === 200) {
+                    setOpenSnackBar(true);
+                } 
+            })
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
     }
 
+    // Arvostele-buttonin OnClick-metodi
     const arvostelebtn = () => {
         if ((value !== undefined || null) && (joArvosteltu !== true)) {
-            //console.log("val: " + JSON.stringify(value));
-            //console.log("sliderVal: " + sliderValue);
-            //console.log(value.viini_id);
             fetchArvostelu();
         }
     };
 
+    //Arvostelun muokkaamisen popup-dialogin sulkeminen, Sulje-buttonin OnClick-metodi
     const suljeDialogi = () => {
         setJoArvosteltu(false);
     };
 
+    //Arvostelun muokkaamisen popup-dialogin sulkeminen ja arvostelun muuttaminen, Muuta arvosteluasi-buttonin OnClick-metodi
     const suljeDialogiJaMuutaArvio = () => {
         setJoArvosteltu(false);
-        //console.log(sliderValue);
-        //console.log("val.viini_id: ", value.viini_id);
         fetchMuutaArvostelu();
-        //alert("Arvostelu päivitetty!");
-        setOpenSnackBar(true);
     };
+
+    // Arvostelun päivittämisen onnistumisesta ilmoittavan snackbarin sulkeminen
     const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -122,6 +122,7 @@ const Arvostele = () => {
         setOpenSnackBar(false);
     };
 
+    //Snackbarin X-Button
     const snackBarAction = (
         <React.Fragment>
             <IconButton
@@ -138,7 +139,6 @@ const Arvostele = () => {
     return (
         <div>
             <h1>Arvioi viini asteikolla 1-5</h1>
-            <div>{`inputValue: '${inputValue}'`}</div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Autocomplete
                     className='Autocomplete'
@@ -162,7 +162,7 @@ const Arvostele = () => {
                     open={openSnackBar}
                     autoHideDuration={6000}
                     onClose={handleCloseSnackBar}
-                    message="Arvioinnin muutos onnistui!"
+                    message="Viinin arvostelu onnistui!"
                     action={snackBarAction}
                 />
             </div>
@@ -237,7 +237,7 @@ const Arvostele = () => {
                             <Button onClick={suljeDialogiJaMuutaArvio}>Muuta arvosteluasi</Button>
                         </DialogActions>
                     </Dialog>
-                </div>) : (<div><p>joarvosteltu false</p></div>)}
+                </div>) : (<div></div>)}
 
         </div>
     );
