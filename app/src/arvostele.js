@@ -89,7 +89,7 @@ const Arvostele = () => {
             .then(response => {
                 if (response.status === 200) {
                     setOpenSnackBar(true);
-                } 
+                }
             })
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
@@ -118,7 +118,6 @@ const Arvostele = () => {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpenSnackBar(false);
     };
 
@@ -182,7 +181,6 @@ const Arvostele = () => {
                             value={sliderValue ?? null}
                             onChange={(event, newValue) => {
                                 setSlidervalue(newValue);
-                                //console.log(sliderValue);
                             }}
                         />
                     </Box>
@@ -226,7 +224,6 @@ const Arvostele = () => {
                                         value={sliderValue ?? null}
                                         onChange={(event, newValue) => {
                                             setSlidervalue(newValue);
-                                            //console.log(sliderValue);
                                         }}
                                     />
                                 </Box>
