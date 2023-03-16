@@ -38,8 +38,8 @@ const RouteApp = () => {
     const kirjautuminen = (result) => {
         console.log(result);
         if (result.includes(kayttajanimi)) {
-            setCookie('user', kayttajanimi);
-            setCookie('token', result.slice(kayttajanimi.length + 31))
+            setCookie('user', kayttajanimi, {maxAge:'3600'});
+            setCookie('token', result.slice(kayttajanimi.length + 31),{maxAge:'3600'});
             setKirjautunut(kayttajanimi);
         }
 
