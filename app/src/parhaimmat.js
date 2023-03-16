@@ -51,7 +51,7 @@ const Parhaimmat = () => {
     return (
         <div>
             <h1>Parhaat viinit</h1>
-            <table className="table table-dark">
+            <table className="table table-striped table-dark">
                 <thead>
                     <tr>
                         <th>Nimi</th>
@@ -79,12 +79,6 @@ const Parhaimmat = () => {
             </table>
         </div>
     );
-    /*
-   return (
-    <div>
-        <h1>Parhaat viinit</h1>
-    </div>
-   );*/
 };
 
 export { Parhaimmat };
