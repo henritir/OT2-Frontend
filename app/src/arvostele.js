@@ -10,6 +10,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import "./App.css";
 import { padding } from '@mui/system';
 import { useCookies } from 'react-cookie';
@@ -21,6 +24,7 @@ const Arvostele = () => {
     const [sliderValue, setSlidervalue] = useState(1);
     const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']);
     const [joArvosteltu, setJoArvosteltu] = useState(false);
+    const [openSnackBar, setOpenSnackBar] = useState(false);
 
 
     // Tämä effect suoritetaan VAIN yhden kerran
@@ -107,7 +111,29 @@ const Arvostele = () => {
         //console.log(sliderValue);
         //console.log("val.viini_id: ", value.viini_id);
         fetchMuutaArvostelu();
+        //alert("Arvostelu päivitetty!");
+        setOpenSnackBar(true);
     };
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackBar(false);
+    };
+
+    const snackBarAction = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleCloseSnackBar}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     return (
         <div>
@@ -131,6 +157,13 @@ const Arvostele = () => {
                         </Box>
                     )}
                     renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
+                />
+                <Snackbar
+                    open={openSnackBar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackBar}
+                    message="Arvioinnin muutos onnistui!"
+                    action={snackBarAction}
                 />
             </div>
             {value ? (<div>
