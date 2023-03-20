@@ -106,13 +106,13 @@ const RouteApp = () => {
                                         <p>{kirjautunut}</p>
                                     </Col>
                                     <Col md='auto'>
-                                        <Button onClick={() => kirjauduUlos()}>
+                                        <Button onClick={() => kirjauduUlos()} variant="outline-secondary">
                                             Kirjaudu ulos
                                         </Button>
 
                                     </Col>
                                     <Col>
-                                        <Button href="/muokkaa">
+                                        <Button href="/muokkaa" variant="outline-secondary">
                                         <SettingsIcon/>
 
                                         </Button>

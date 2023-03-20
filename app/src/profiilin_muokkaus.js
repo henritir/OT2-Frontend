@@ -1,17 +1,43 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Button, Col, Container, Row, Table } from 'react-bootstrap';
-
+import Form from "react-bootstrap/Form";
 
 const Muokkaus = (props) => {
     const [tiedot, setTiedot] = useState([]);
     const [muokkaan, setMuokkaan] = useState(false);
     const [muokkaasposti, setMuokkaasposti] = useState(false);
     const [muokkaasala, setMuokkaasala] = useState(false);
+    const [kayttajanimi, setKayttajanimi] = useState("");
+    const [sposti, setSposti] = useState("");
+    const [salasana, setSalasana] = useState("");
+    const [uusisala, setUusisala] =useState("");
+    const [uusisala2, setUusisala2] =useState("");
+    const [tallenna, setTallenna] = useState(false);
 
     const aseta = (e) => {
         console.log(e);
         setTiedot(JSON.parse(e)[0]);
+    }
+
+    const muokkaaClicked = (e) => {
+        if(e==="nimi"){
+            setMuokkaan(true);
+            setMuokkaasposti(false);
+            setMuokkaasala(false);
+            setSposti("");
+        }
+        if(e==="sposti"){
+            setMuokkaan(false);
+            setMuokkaasposti(true);
+            setMuokkaasala(false);
+            setKayttajanimi("");
+        }
+        if(e==="sala"){
+            setMuokkaan(false);
+            setMuokkaasposti(false);
+            setMuokkaasala(true);
+        }
     }
 
 
@@ -36,6 +62,54 @@ const Muokkaus = (props) => {
 
     }, []);
 
+    useEffect(() => {
+        const fetchMuokkaa = async () => {
+
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer " + props.token);
+            myHeaders.append("Content-Type", "application/json");
+
+            if(kayttajanimi){ var raw = JSON.stringify({
+                "kayttajanimi": kayttajanimi,
+                "sposti": tiedot.sposti
+            });
+               
+            }
+            if(sposti){
+                var raw = JSON.stringify({
+                    "kayttajanimi": tiedot.kayttajanimi,
+                    "sposti": sposti
+                });
+            }
+            
+
+           
+            console.log(raw);
+            var requestOptions = {
+                method: 'PATCH',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch("http://localhost:3001/muokkaa_kayttaja", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .then(window.location.reload(true))
+                .catch(error => console.log('error', error));
+        }
+
+        if(kayttajanimi||sposti){
+            console.log(sposti);
+            fetchMuokkaa();
+            setKayttajanimi("");
+            setSalasana("");
+            setSposti("");
+        }
+
+
+    }, [tallenna]);
+
     return (
         <div style={{ backgroundColor: "white", minHeight: "100vh" }}>
             <Container fluid>
@@ -46,41 +120,98 @@ const Muokkaus = (props) => {
                         <tr>
                             <td>Käyttäjänimi</td>
                             <td>{tiedot.kayttajanimi}</td>
-                            <td><Button variant='link' onClick={() => setMuokkaan(true)}>Muokkaa</Button></td>
+                            <td><Button variant='link' value={"nimi"} onClick={(e) => muokkaaClicked(e.target.value)}>Muokkaa</Button></td>
                         </tr>
-                        {muokkaan ?
-                            <tr>
-                                <td><input></input></td>
-                                <td><Button>Tallenna</Button></td>
-                                <td><Button onClick={()=>setMuokkaan(false)}>Peruuta</Button></td>
-                            </tr>
-                            : null}
                         <tr>
                             <td>Sähköposti</td>
                             <td>{tiedot.sposti}</td>
-                            <td><Button variant='link'  onClick={() => setMuokkaasposti(true)}>Muokkaa</Button></td>
+                            <td><Button variant='link' value={"sposti"} onClick={(e) => muokkaaClicked(e.target.value)}>Muokkaa</Button></td>
                         </tr>
-                        {muokkaasposti ?
-                            <tr>
-                                <td><input></input></td>
-                                <td><Button>Tallenna</Button></td>
-                                <td><Button onClick={()=>setMuokkaasposti(false)}>Peruuta</Button></td>
-                            </tr>
-                            : null}
                         <tr>
                             <td>Salasana</td>
                             <td></td>
-                            <td><Button variant='link'  onClick={() => setMuokkaasala(true)}>Vaihda salasana</Button></td>
+                            <td><Button variant='link' value={"sala"} onClick={(e) => muokkaaClicked(e.target.value)}>Vaihda salasana</Button></td>
                         </tr>
-                        {muokkaasala ?
-                            <tr>
-                                <td><input type="password"></input></td>
-                                <td><Button>Tallenna</Button></td>
-                                <td><Button onClick={()=>setMuokkaasala(false)}>Peruuta</Button></td>
-                            </tr>
-                            : null}
                     </tbody>
                 </Table>
+                {muokkaan ?
+                    <div>
+                        <Row>
+                            <Col md={1}></Col>
+                            <Col md={3}>
+                                <Form.Control
+                                    placeholder="uusi käyttäjänimi"
+                                    value={kayttajanimi}
+                                    onChange={(e)=>{setKayttajanimi(e.target.value)}}
+                                    className='m-2'
+                                />
+                            </Col>
+                            <Col md={4}>
+                                <Button onClick={()=>setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
+                                <Button onClick={() => setMuokkaan(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                    : null
+                }
+
+                {muokkaasposti ?
+                    <div>
+                        <Row>
+                            <Col md={1}></Col>
+                            <Col md={3}>
+                                <Form.Control
+                                    placeholder="uusi sähköposti"
+                                    value={sposti}
+                                    onChange={(e)=>setSposti(e.target.value)}
+                                    className='m-2'
+                                />
+                            </Col>
+                            <Col md={4}>
+                            <Button onClick={()=>setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
+                            <Button onClick={() => setMuokkaasposti(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                    : null
+                }
+
+                {muokkaasala ?
+                    <div>
+                        <Row>
+                            <Col md={3}>
+                                <Form.Control
+                                    placeholder="Vanha salasana"
+                                    htmlSize="8"
+                                    className='m-2'
+                                />
+                            </Col>
+                            <Col md={3}>
+                                <Form.Control
+                                    placeholder="Uusi salasana"
+                                    htmlSize="8"
+                                    className='m-2'
+                                />
+                            </Col>
+
+                            <Col md={3}>
+                                <Form.Control
+                                    placeholder="Uusi salasana"
+                                    htmlSize="8"
+                                    className='m-2'
+                                />
+                            </Col>
+
+                            <Col md={3}>
+                            <Button className='m-2' variant='outline-primary'>Tallenna</Button>
+                            <Button className='m-2' onClick={() => setMuokkaasala(false)} variant='outline-primary'>Peruuta</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                    : null
+                }
+
+
             </Container>
         </div>
     )
