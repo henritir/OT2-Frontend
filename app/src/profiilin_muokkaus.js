@@ -11,9 +11,10 @@ const Muokkaus = (props) => {
     const [kayttajanimi, setKayttajanimi] = useState("");
     const [sposti, setSposti] = useState("");
     const [salasana, setSalasana] = useState("");
-    const [uusisala, setUusisala] =useState("");
-    const [uusisala2, setUusisala2] =useState("");
+    const [uusisalasana, setUusisalasana] = useState("");
+    const [uusisalasana2, setUusisalasana2] = useState("");
     const [tallenna, setTallenna] = useState(false);
+    const [vaihda, setVaihda] = useState(false);
 
     const aseta = (e) => {
         console.log(e);
@@ -21,22 +22,27 @@ const Muokkaus = (props) => {
     }
 
     const muokkaaClicked = (e) => {
-        if(e==="nimi"){
+        if (e === "nimi") {
             setMuokkaan(true);
             setMuokkaasposti(false);
             setMuokkaasala(false);
             setSposti("");
         }
-        if(e==="sposti"){
+        if (e === "sposti") {
             setMuokkaan(false);
             setMuokkaasposti(true);
             setMuokkaasala(false);
             setKayttajanimi("");
+            setSalasana("");
+            setUusisalasana("");
+            setUusisalasana2("");
         }
-        if(e==="sala"){
+        if (e === "sala") {
             setMuokkaan(false);
             setMuokkaasposti(false);
             setMuokkaasala(true);
+            setKayttajanimi("");
+            setSposti("");
         }
     }
 
@@ -69,21 +75,20 @@ const Muokkaus = (props) => {
             myHeaders.append("Authorization", "Bearer " + props.token);
             myHeaders.append("Content-Type", "application/json");
 
-            if(kayttajanimi){ var raw = JSON.stringify({
-                "kayttajanimi": kayttajanimi,
-                "sposti": tiedot.sposti
-            });
-               
+            if (kayttajanimi) {
+                var raw = JSON.stringify({
+                    "kayttajanimi": kayttajanimi,
+                    "sposti": tiedot.sposti
+                });
+
             }
-            if(sposti){
+            if (sposti) {
                 var raw = JSON.stringify({
                     "kayttajanimi": tiedot.kayttajanimi,
                     "sposti": sposti
                 });
             }
-            
 
-           
             console.log(raw);
             var requestOptions = {
                 method: 'PATCH',
@@ -99,7 +104,7 @@ const Muokkaus = (props) => {
                 .catch(error => console.log('error', error));
         }
 
-        if(kayttajanimi||sposti){
+        if (kayttajanimi || sposti) {
             console.log(sposti);
             fetchMuokkaa();
             setKayttajanimi("");
@@ -109,6 +114,50 @@ const Muokkaus = (props) => {
 
 
     }, [tallenna]);
+
+
+    useEffect(() => {
+        const fetchSalasana = async () => {
+
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer "+ props.token);
+            myHeaders.append("Content-Type", "application/json");
+            
+            var raw = JSON.stringify({
+              "salasana": salasana,
+              "uusisalasana": uusisalasana
+            });
+            
+            var requestOptions = {
+              method: 'PATCH',
+              headers: myHeaders,
+              body: raw,
+              redirect: 'follow'
+            };
+            
+            fetch("http://localhost:3001/vaihda_salasanaa", requestOptions)
+              .then(response => response.text())
+              .then(result => console.log(result))
+              .catch(error => console.log('error', error));
+        }
+
+
+        if (uusisalasana === uusisalasana2&&uusisalasana) {
+            console.log(salasana+" "+ uusisalasana);
+            fetchSalasana();
+            
+
+        }
+        else {
+            console.log("salasanat ei täsmää")
+        }
+        setSalasana("");
+        setUusisalasana("");
+        setUusisalasana2("");
+
+
+    }, [vaihda]);
+
 
     return (
         <div style={{ backgroundColor: "white", minHeight: "100vh" }}>
@@ -142,12 +191,12 @@ const Muokkaus = (props) => {
                                 <Form.Control
                                     placeholder="uusi käyttäjänimi"
                                     value={kayttajanimi}
-                                    onChange={(e)=>{setKayttajanimi(e.target.value)}}
+                                    onChange={(e) => { setKayttajanimi(e.target.value) }}
                                     className='m-2'
                                 />
                             </Col>
                             <Col md={4}>
-                                <Button onClick={()=>setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
+                                <Button onClick={() => setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
                                 <Button onClick={() => setMuokkaan(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
                             </Col>
                         </Row>
@@ -163,13 +212,13 @@ const Muokkaus = (props) => {
                                 <Form.Control
                                     placeholder="uusi sähköposti"
                                     value={sposti}
-                                    onChange={(e)=>setSposti(e.target.value)}
+                                    onChange={(e) => setSposti(e.target.value)}
                                     className='m-2'
                                 />
                             </Col>
                             <Col md={4}>
-                            <Button onClick={()=>setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
-                            <Button onClick={() => setMuokkaasposti(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
+                                <Button onClick={() => setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
+                                <Button onClick={() => setMuokkaasposti(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
                             </Col>
                         </Row>
                     </div>
@@ -184,6 +233,9 @@ const Muokkaus = (props) => {
                                     placeholder="Vanha salasana"
                                     htmlSize="8"
                                     className='m-2'
+                                   
+                                    onChange={(e) => setSalasana(e.target.value)}
+                                    value={salasana}
                                 />
                             </Col>
                             <Col md={3}>
@@ -191,6 +243,9 @@ const Muokkaus = (props) => {
                                     placeholder="Uusi salasana"
                                     htmlSize="8"
                                     className='m-2'
+                                    
+                                    onChange={(e) => setUusisalasana(e.target.value)}
+                                    value={uusisalasana}
                                 />
                             </Col>
 
@@ -199,12 +254,15 @@ const Muokkaus = (props) => {
                                     placeholder="Uusi salasana"
                                     htmlSize="8"
                                     className='m-2'
+                                   
+                                    onChange={(e) => setUusisalasana2(e.target.value)}
+                                    value={uusisalasana2}
                                 />
                             </Col>
 
                             <Col md={3}>
-                            <Button className='m-2' variant='outline-primary'>Tallenna</Button>
-                            <Button className='m-2' onClick={() => setMuokkaasala(false)} variant='outline-primary'>Peruuta</Button>
+                                <Button className='m-2' variant='outline-primary' onClick={() => setVaihda(!vaihda)}>Tallenna</Button>
+                                <Button className='m-2' onClick={() => setMuokkaasala(false)} variant='outline-primary'>Peruuta</Button>
                             </Col>
                         </Row>
                     </div>
