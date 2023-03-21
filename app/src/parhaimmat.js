@@ -42,10 +42,10 @@ const Parhaimmat = () => {
             redirect: 'follow'
         };
 
-       let response = await fetch("http://localhost:3001/parhaatviinit/rajattu", requestOptions);
-       console.log("fetch called ...", response);
-       let c = await response.json();
-       setViinit(c);
+        let response = await fetch("http://localhost:3001/parhaatviinit/rajattu", requestOptions);
+        console.log("fetch called ...", response);
+        let c = await response.json();
+        setViinit(c);
     }
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan viinit tietokannasta
@@ -69,6 +69,7 @@ const Parhaimmat = () => {
         return (
 
             <tr key={i} id={s.id}>
+                <td>{i + 1}</td>
                 <td>{s.nimi}</td>
                 <td>{s.valmistaja}</td>
                 <td>{s.hinta}</td>
@@ -200,6 +201,7 @@ const Parhaimmat = () => {
                 <table className="table table-striped table-dark">
                     <thead>
                         <tr>
+                            <th>Sija</th>
                             <th>Nimi</th>
                             <th>Valmistaja</th>
                             <th>Hinta (€)</th>
