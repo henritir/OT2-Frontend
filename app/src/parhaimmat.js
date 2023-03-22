@@ -4,6 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from "react-bootstrap/Button";
+import Rating from '@mui/material/Rating';
 
 const Parhaimmat = () => {
 
@@ -83,7 +84,14 @@ const Parhaimmat = () => {
                 <td>{s.rypaleet}</td>
                 <td>{s.luonnehdinta}</td>
                 <td>{s.alkoholipros}</td>
-                <td>{s.arvio}</td>
+                <td>
+                    <Rating
+                        name="simple-controlled"
+                        size='large'
+                        readOnly
+                        value={s.arvio}                       
+                    />
+                </td>
             </tr>
 
         )
