@@ -189,7 +189,7 @@ const RouteApp = () => {
                             element={<Rekisterointi />}
                         />
                         <Route element={<Suojattu kirjautunut={kirjautunut} />}>
-                            <Route path="/profiili" element={<Profiili />} />
+                            <Route path="/profiili" element={<Profiili token={cookies.token} />} />
                             <Route path="/muokkaa" element={<Muokkaus token={cookies.token}/>}/>
                             <Route
                                 path="/parhaimmat"
