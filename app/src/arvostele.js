@@ -13,6 +13,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import Rating from '@mui/material/Rating';
+import Paper from '@mui/material/Paper';
 import "./App.css";
 import { padding } from '@mui/system';
 import { useCookies } from 'react-cookie';
@@ -20,7 +22,7 @@ import { useCookies } from 'react-cookie';
 const Arvostele = () => {
     const [value, setValue] = useState() // Autocompleten value, valitun viinin json-objekti
     const [viinit, setViinit] = useState([]) // Taulukko viineille 
-    const [sliderValue, setSlidervalue] = useState(1); // Sliderin value, 1-5
+    const [ratingValue, setRatingvalue] = useState(1); // Sliderin value, 1-5
     const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']); // Selaimen keksit
     const [joArvosteltu, setJoArvosteltu] = useState(false); // useState, joka laukaisee popup Dialog-komponentin jos valittua viiniä yrittää arvostella toista kertaa
     const [openSnackBar, setOpenSnackBar] = useState(false); //  useState, joka laukaisee popup SnackBar-komponentin jos viinin arvostelu onnistuu
@@ -44,7 +46,7 @@ const Arvostele = () => {
 
         var raw = JSON.stringify({
             "kayttajanimi": cookies.user,
-            "arvio": sliderValue,
+            "arvio": ratingValue,
             "viini_id": value.viini_id
         });
 
@@ -74,7 +76,7 @@ const Arvostele = () => {
 
         var raw = JSON.stringify({
             "kayttajanimi": cookies.user,
-            "arvio": sliderValue,
+            "arvio": ratingValue,
             "viini_id": value.viini_id
         });
 
@@ -136,106 +138,93 @@ const Arvostele = () => {
     );
 
     return (
-        <div>
-            <h1>Arvioi viini asteikolla 1-5</h1>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Autocomplete
-                    className='Autocomplete'
-                    disablePortal
-                    value={value ?? null}
-                    onChange={(event, newValue) => {
-                        setValue(newValue);
-                    }}
-                    id="combo-box-demo"
-                    getOptionLabel={(option) => option.nimi}
-                    options={viinit}
-                    sx={{ width: 600 }}
-                    renderOption={(props, option) => (
-                        <Box component="li" {...props} key={option.viini_id}>
-                            {option.nimi}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 20}}>
+            <Paper elevation={3} style={{width: '70%', backgroundColor: '#f2f2f2'}}>
+                <h1>Arvioi viini asteikolla 1-5</h1>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Autocomplete
+                        className='Autocomplete'
+                        disablePortal
+                        value={value ?? null}
+                        onChange={(event, newValue) => {
+                            setValue(newValue);
+                        }}
+                        id="combo-box-demo"
+                        getOptionLabel={(option) => option.nimi}
+                        options={viinit}
+                        sx={{ width: 600 }}
+                        renderOption={(props, option) => (
+                            <Box component="li" {...props} key={option.viini_id}>
+                                {option.nimi}
+                            </Box>
+                        )}
+                        renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
+                    />
+                    <Snackbar
+                        open={openSnackBar}
+                        autoHideDuration={6000}
+                        onClose={handleCloseSnackBar}
+                        message="Viinin arvostelu onnistui!"
+                        action={snackBarAction}
+                    />
+                </div>
+                {value ? (<div>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                        <Box width={300}>
+                            <Rating
+                                name="simple-controlled"
+                                size='large'
+                                value={ratingValue}
+                                onChange={(event, newValue) => {
+                                    setRatingvalue(newValue);
+                                }}
+                            />
                         </Box>
-                    )}
-                    renderInput={(params) => <TextField {...params} label="Hae Viiniä" />}
-                />
-                <Snackbar
-                    open={openSnackBar}
-                    autoHideDuration={6000}
-                    onClose={handleCloseSnackBar}
-                    message="Viinin arvostelu onnistui!"
-                    action={snackBarAction}
-                />
-            </div>
-            {value ? (<div>
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                    <Box width={300}>
-                        <Slider
-                            size="large"
-                            defaultValue={1}
-                            aria-label="Small"
-                            valueLabelDisplay="auto"
-                            step={1}
-                            marks
-                            min={1}
-                            max={5}
-                            color="secondary"
-                            value={sliderValue ?? null}
-                            onChange={(event, newValue) => {
-                                setSlidervalue(newValue);
-                            }}
-                        />
-                    </Box>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                    <Button onClick={() => arvostelebtn()}>
-                        Arvostele
-                    </Button>
-                </div>
-            </div>) : (<div><h1>Valitse viini että voit arvostella</h1></div>)}
-            {joArvosteltu ? (
-                <div>
-                    <Dialog
-                        open={joArvosteltu}
-                        onClose={suljeDialogi}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title">
-                            {"Olet jo arvostellut tämän viinin!"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                Haluatko muokata arvosteluasi?
-                            </DialogContentText>
-                            <p>Viinin nimi: {value.nimi}</p>
-                            <p>arvio: </p>
-                            <br />
-                            <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                                <Box width={300}>
-                                    <Slider
-                                        size="large"
-                                        defaultValue={1}
-                                        aria-label="Small"
-                                        valueLabelDisplay="auto"
-                                        step={1}
-                                        marks
-                                        min={1}
-                                        max={5}
-                                        color="secondary"
-                                        value={sliderValue ?? null}
-                                        onChange={(event, newValue) => {
-                                            setSlidervalue(newValue);
-                                        }}
-                                    />
-                                </Box>
-                            </div>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={suljeDialogi}>Sulje</Button>
-                            <Button onClick={suljeDialogiJaMuutaArvio}>Muuta arvosteluasi</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>) : (<div></div>)}
-
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                        <Button onClick={() => arvostelebtn()}>
+                            Arvostele
+                        </Button>
+                    </div>
+                </div>) : (<div><h1>Valitse viini että voit arvostella</h1></div>)}
+                {joArvosteltu ? (
+                    <div>
+                        <Dialog
+                            open={joArvosteltu}
+                            onClose={suljeDialogi}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Olet jo arvostellut tämän viinin!"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    Haluatko muokata arvosteluasi?
+                                </DialogContentText>
+                                <p>Viinin nimi: {value.nimi}</p>
+                                <p>arvio: </p>
+                                <br />
+                                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                                    <Box width={300}>
+                                        <Rating
+                                            name="simple-controlled"
+                                            size='large'
+                                            value={ratingValue}
+                                            onChange={(event, newValue) => {
+                                                setRatingvalue(newValue);
+                                            }}
+                                        />
+                                    </Box>
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={suljeDialogi}>Sulje</Button>
+                                <Button onClick={suljeDialogiJaMuutaArvio}>Muuta arvosteluasi</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>) : (<div></div>)}
+            </Paper>
         </div>
     );
 };
