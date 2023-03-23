@@ -24,7 +24,7 @@ const Profiili = (props) => {
     const [hintaa, setHintaa] = useState(0);
     const [lahde, setLahde] = useState();
 
-    const hintaluokat = ["Kyykky", "Keskihintainen", "Kallis", "Erittäin kallis"];
+    const hintaluokat = ["Kyykky(<20€/l)", "Keskihintainen(20-53€/l)", "Kallis(53-133€/l)", "Erittäin kallis(>133€/l)"];
     const lahteet = [kyykky, keski, kallis, erittain_kallis];
 
 
