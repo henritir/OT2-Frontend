@@ -2,87 +2,146 @@ import { Col, Container, Row } from "react-bootstrap";
 import maatunnukset from "./maatunnukset.json";
 import { useEffect } from "react";
 import { useState } from "react";
+import Rating from '@mui/material/Rating';
+import kyykky from "./kyykky.PNG";
+import keski from "./keski.PNG";
+import kallis from "./kallis.PNG";
+import erittain_kallis from "./erittain_kallis.PNG";
+import { textAlign } from "@mui/system";
 const Profiili = (props) => {
 
     const [maat, setMaat] = useState([]);
     const [arviotm, setArviotm] = useState([]);
     const [arviott, setArviott] = useState([]);
+    const [arvioth, setArvioh] = useState([[], [], [], []]);
     const [tulos, setTulos] = useState([]);
     const [tyypit, setTyypit] = useState([]);
     const [osoite, setOsoite] = useState([""]);
+    const [marvio, setMarvio] = useState(0);
+    const [tyyppi, setTyyppi] = useState("");
+    const [tyyppia, setTyyppia] = useState(0);
+    const [hinta, setHinta] = useState("");
+    const [hintaa, setHintaa] = useState(0);
+    const [lahde, setLahde] = useState();
+
+    const hintaluokat = ["Kyykky", "Keskihintainen", "Kallis", "Erittäin kallis"];
+    const lahteet = [kyykky, keski, kallis, erittain_kallis];
+
+
 
 
 
     //console.log(maatunnukset[0].argentiina);
 
     const kasittele = (e) => {
-        if(maat.length===0){
+        if (maat.length === 0) {
             console.log(e);
             for (let i = 0; i < Object.keys(e).length; i++) {
 
-                if (!maat.includes(e[i].valmistusmaa)){
+                if (!maat.includes(e[i].valmistusmaa)) {             //maiden lisäys
                     maat.push(e[i].valmistusmaa)
                 }
 
-                if(!tyypit.includes(e[i].tyyppi)){
+                if (!tyypit.includes(e[i].tyyppi)) {                  //tyyppien lisäys
                     tyypit.push(e[i].tyyppi)
                 }
-    
-                if(arviotm.length<maat.length){
+
+                if (arviotm.length < maat.length) {                     //ensimmäisen maakohtaisen arvion lisääminen
                     arviotm.push([e[i].arvio]);
                 }
 
                 else {
-                    arviotm[maat.indexOf(e[i].valmistusmaa)].push(e[i].arvio);
+                    arviotm[maat.indexOf(e[i].valmistusmaa)].push(e[i].arvio);  //muiden kuin ensimmäisten maakohtaisten arvioiden lisäys
                 }
 
-                if(arviott.length<tyypit.length){
+                if (arviott.length < tyypit.length) {                   //ensimmäisen tyyppikohtaisen arvion lisääminen 
                     arviott.push([e[i].arvio]);
                 }
 
                 else {
-                    arviott[tyypit.indexOf(e[i].tyyppi)].push(e[i].arvio);
+                    arviott[tyypit.indexOf(e[i].tyyppi)].push(e[i].arvio);      //muiden kuin ensimmäisten tyyppikohtaisten arvioiden lisäys
+                }
+
+
+                if (e[i].litrahinta < 20) {
+                    arvioth[0].push(e[i].arvio);
+                }
+
+                else if (e[i].litrahinta > 15 && e[i].litrahinta < 53) {
+                    arvioth[1].push(e[i].arvio);
+                }
+
+                else if (e[i].litrahinta > 53 && e[i].litrahinta < 133) {
+                    arvioth[2].push(e[i].arvio);
+                }
+
+                else if (e[i].litrahinta > 100) {
+                    arvioth[3].push(e[i].arvio);
                 }
 
 
             }
-    
+
             for (let i = 0; i < arviotm.length; i++) {
                 let summa = 0.0;
-                let jakaja =0;
+                let jakaja = 0;
                 for (let j = 0; j < arviotm[i].length; j++) {
                     summa += arviotm[i][j];
-                    jakaja = j+1;
+                    jakaja = j + 1;
                 }
-                arviotm[i] = summa/jakaja;
+                arviotm[i] = summa / jakaja;
             }
 
             for (let i = 0; i < arviott.length; i++) {
                 let summa = 0.0;
-                let jakaja =0;
+                let jakaja = 0;
                 for (let j = 0; j < arviott[i].length; j++) {
                     summa += arviott[i][j];
-                    jakaja = j+1;
+                    jakaja = j + 1;
                 }
-                arviott[i] = summa/jakaja;
+                arviott[i] = summa / jakaja;
             }
 
+            for (let i = 0; i < arvioth.length; i++) {
+                let summa = 0.0;
+                let jakaja = 0;
+                for (let j = 0; j < arvioth[i].length; j++) {
+                    summa += arvioth[i][j];
+                    jakaja = j + 1;
+                }
+                if (jakaja === 0) {
+                    jakaja = 1
+                }
+                arvioth[i] = summa / jakaja;
+            }
 
-            tulos.push([maat[arviotm.indexOf(Math.max.apply(null,arviotm))],Math.max.apply(null,arviotm)]);
-            tulos.push([tyypit[arviott.indexOf(Math.max.apply(null,arviott))],Math.max.apply(null,arviott)]);
-            
-            
+            console.log(arvioth.indexOf(Math.max.apply(null, arvioth)));
+
+
+            tulos.push([maat[arviotm.indexOf(Math.max.apply(null, arviotm))], Math.max.apply(null, arviotm)]);
+            tulos.push([tyypit[arviott.indexOf(Math.max.apply(null, arviott))], Math.max.apply(null, arviott)])
+
+
+            setTyyppi(tyypit[arviott.indexOf(Math.max.apply(null, arviott))]);
+            setTyyppia(Math.max.apply(null, arviott));
+            setHinta(hintaluokat[arvioth.indexOf(Math.max.apply(null, arvioth))]);
+            setLahde(lahteet[arvioth.indexOf(Math.max.apply(null, arvioth))]);
+            setHintaa(Math.max.apply(null, arvioth));
+
+
+
             console.log(tyypit);
-           
+
             let b = tulos[0][0].toLowerCase();
             console.log(b);
             let a = maatunnukset[0][b];
             console.log(a);
-            
-            setOsoite("https://www.maidenliput.fi/data/flags/w580/" +a+ ".webp");
+            console.log(tulos);
+            setMarvio(tulos[0][1]);
+            setOsoite("https://www.maidenliput.fi/data/flags/w580/" + a + ".webp");
         }
 
-        
+
 
     }
 
@@ -105,25 +164,73 @@ const Profiili = (props) => {
                 .catch(error => console.log('error', error));
 
         }
-        if(maat.length===0){
+        if (maat.length === 0) {
             fetchArvostelut();
         }
-        
+
 
     }, []);
 
 
     return (
-        <div style={{ backgroundColor: "lightgray", minHeight: "100vh" }}>
-            <h1>Maku profiilisi</h1>
+        <div style={{ backgroundColor: "lightgray", minHeight: "100vh", textAlign:"left"}}>
+            <h1>Makuprofiilisi</h1>
             <h3>Arviointiesi perusteella pidät eniten</h3>
             <Container fluid>
-                <Row>
-                    <Col><img src={osoite} alt="lippu"></img></Col>
-                    <Col></Col>
-
+                <Row className="pt-5">
+                    <Col md={6}><h2>Alkuperämaa</h2></Col>
+                    <Col md={6}><img src={osoite} style={{ width: "70%" }} alt="lippu" ></img>
+                    </Col>
                 </Row>
-                <Row></Row>
+                <Row>
+                    <Col md={6}></Col>
+                    <Col md={6}>
+                        <Rating
+                            name="simple-controlled"
+                            precision={0.25}
+                            size='large'
+                            readOnly
+                            value={marvio}
+                        />
+                    </Col>
+                </Row>
+                <Row className="pt-5">
+                    <Col md={6}><h2>Tyyppi</h2></Col>
+                    <Col md={6}><h3>{tyyppi}</h3>
+                        <Rating
+                            name="simple-controlled"
+                            precision={0.25}
+                            size='large'
+                            readOnly
+                            value={tyyppia}
+                        />
+
+                    </Col>
+                </Row>
+                <Row className="pt-5">
+                    <Col md={6}><h2>Hintaluokka</h2></Col>
+                    <Col md={6}>
+                        <h3>{hinta}</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}></Col>
+                    <Col md={6}><img height="200px" src={lahde} alt="halpa"></img>
+
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}></Col>
+                    <Col md={6}>
+                        <Rating
+                            name="simple-controlled"
+                            precision={0.25}
+                            size='large'
+                            readOnly
+                            value={hintaa}
+                        />
+                    </Col>
+                </Row>
             </Container>
         </div>
     );
