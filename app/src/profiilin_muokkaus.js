@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useEffect, useState, } from 'react'
 import { Button, Col, Container, Row, Table } from 'react-bootstrap';
 import Form from "react-bootstrap/Form";
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Muokkaus = (props) => {
     const [tiedot, setTiedot] = useState([]);
@@ -15,6 +17,9 @@ const Muokkaus = (props) => {
     const [uusisalasana2, setUusisalasana2] = useState("");
     const [tallenna, setTallenna] = useState(false);
     const [vaihda, setVaihda] = useState(false);
+    const [snackbar, setSnackbar] = useState(false);
+    const [ilmoitus, setIlmoitus] = useState("");
+    const [paivita, setPaivita] = useState(false);
 
     const aseta = (e) => {
         console.log(e);
@@ -46,6 +51,26 @@ const Muokkaus = (props) => {
         }
     }
 
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar(false);
+    };
+
+    const snackBarAction = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleCloseSnackBar}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
+
 
 
     useEffect(() => {
@@ -66,7 +91,7 @@ const Muokkaus = (props) => {
         }
         fetchKayttaja();
 
-    }, []);
+    }, [paivita]);
 
     useEffect(() => {
         const fetchMuokkaa = async () => {
@@ -98,14 +123,27 @@ const Muokkaus = (props) => {
             };
 
             fetch("http://localhost:3001/muokkaa_kayttaja", requestOptions)
-                .then(response => response.text())
+                .then(response => {
+                    if (response.status === 200) {
+                        setIlmoitus("Käyttäjätietojen päivitys onnistui")
+                    }
+                    if (response.status === 400) {
+                        setIlmoitus("Käyttäjänimi tai sähköposti jo käytössä")
+                    }
+                    if (response.status === 500) {
+                        setIlmoitus("Käyttäjätietojen päivitys epäonnistui")
+                    }
+                    setSnackbar(true);
+                    setPaivita(!paivita);
+                    setMuokkaan(false);
+                    setMuokkaasposti(false);
+                })
+
                 .then(result => console.log(result))
-                .then(window.location.reload(true))
                 .catch(error => console.log('error', error));
         }
 
         if (kayttajanimi || sposti) {
-            console.log(sposti);
             fetchMuokkaa();
             setKayttajanimi("");
             setSalasana("");
@@ -120,40 +158,56 @@ const Muokkaus = (props) => {
         const fetchSalasana = async () => {
 
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer "+ props.token);
+            myHeaders.append("Authorization", "Bearer " + props.token);
             myHeaders.append("Content-Type", "application/json");
-            
+
             var raw = JSON.stringify({
-              "salasana": salasana,
-              "uusisalasana": uusisalasana
+                "salasana": salasana,
+                "uusisalasana": uusisalasana
             });
-            
+
             var requestOptions = {
-              method: 'PATCH',
-              headers: myHeaders,
-              body: raw,
-              redirect: 'follow'
+                method: 'PATCH',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            
+
             fetch("http://localhost:3001/vaihda_salasanaa", requestOptions)
-              .then(response => response.text())
-              .then(result => console.log(result))
-              .catch(error => console.log('error', error));
+                .then(response => {
+                    if (response.status === 200) {
+                        setIlmoitus("Salasanan vaihto onnistui");
+                    }
+                    if (response.status === 400) {
+                        setIlmoitus("Väärä salasana");
+                    }
+                    if (response.status === 500) {
+                        setIlmoitus("Salasanan vaihto epäonnistui")
+                    }
+                    setSnackbar(true);
+                    setMuokkaasala(false);
+                })
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
         }
 
 
-        if (uusisalasana === uusisalasana2&&uusisalasana) {
-            console.log(salasana+" "+ uusisalasana);
+        if (uusisalasana === uusisalasana2 && uusisalasana) {
+            console.log(salasana + " " + uusisalasana);
             fetchSalasana();
-            
+            setSalasana("");
+            setUusisalasana("");
+            setUusisalasana2("");
+
+
 
         }
-        else {
-            console.log("salasanat ei täsmää")
+        else if (uusisalasana != uusisalasana2) {
+            console.log("salasanat ei täsmää");
+            setIlmoitus("Salasanat eivät täsmää");
+            setSnackbar(true);
         }
-        setSalasana("");
-        setUusisalasana("");
-        setUusisalasana2("");
+
 
 
     }, [vaihda]);
@@ -196,7 +250,7 @@ const Muokkaus = (props) => {
                                 />
                             </Col>
                             <Col md={4}>
-                                <Button onClick={() => setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
+                                <Button onClick={() => setTallenna(!tallenna)} className='m-2' variant='outline-primary'>Tallenna</Button>
                                 <Button onClick={() => setMuokkaan(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
                             </Col>
                         </Row>
@@ -217,7 +271,7 @@ const Muokkaus = (props) => {
                                 />
                             </Col>
                             <Col md={4}>
-                                <Button onClick={() => setTallenna(true)} className='m-2' variant='outline-primary'>Tallenna</Button>
+                                <Button onClick={() => setTallenna(!tallenna)} className='m-2' variant='outline-primary'>Tallenna</Button>
                                 <Button onClick={() => setMuokkaasposti(false)} className='m-2' variant='outline-primary'>Peruuta</Button>
                             </Col>
                         </Row>
@@ -233,7 +287,8 @@ const Muokkaus = (props) => {
                                     placeholder="Vanha salasana"
                                     htmlSize="8"
                                     className='m-2'
-                                   
+                                    type='password'
+
                                     onChange={(e) => setSalasana(e.target.value)}
                                     value={salasana}
                                 />
@@ -243,7 +298,8 @@ const Muokkaus = (props) => {
                                     placeholder="Uusi salasana"
                                     htmlSize="8"
                                     className='m-2'
-                                    
+                                    type='password'
+
                                     onChange={(e) => setUusisalasana(e.target.value)}
                                     value={uusisalasana}
                                 />
@@ -254,7 +310,8 @@ const Muokkaus = (props) => {
                                     placeholder="Uusi salasana"
                                     htmlSize="8"
                                     className='m-2'
-                                   
+                                    type='password'
+
                                     onChange={(e) => setUusisalasana2(e.target.value)}
                                     value={uusisalasana2}
                                 />
@@ -268,6 +325,13 @@ const Muokkaus = (props) => {
                     </div>
                     : null
                 }
+                <Snackbar
+                    open={snackbar}
+                    autoHideDuration={5000}
+                    onClose={handleCloseSnackBar}
+                    message={ilmoitus}
+                    action={snackBarAction}
+                />
 
 
             </Container>
