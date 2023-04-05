@@ -8,24 +8,30 @@ import Rating from '@mui/material/Rating';
 
 const Parhaimmat = () => {
 
-    const [viinit, setViinit] = useState([])
-    const [valmistusMaa, setValmistusMaa] = useState('');
-    const [pakkausTyyppi, setPakkausTyyppi] = useState('');
-    const [tyyppi, setTyyppi] = useState('');
+    const [viinit, setViinit] = useState([]) // useState taulukko parhaille viineille
+    const [valmistusMaa, setValmistusMaa] = useState(''); // valmistusmaa select-komponentin value
+    const [pakkausTyyppi, setPakkausTyyppi] = useState(''); // pakkausTyyppi select komponentin value
+    const [tyyppi, setTyyppi] = useState(''); // tyyppi select komponentin value
 
+    // valmistusmaa - select komponentin  handleChange
     const handleApMaaChange = (event) => {
         setValmistusMaa(event.target.value);
         console.log(valmistusMaa);
     };
+
+        // pakkaustyyppi - select komponentin  handleChange
     const handlePakkausTyyppiChange = (event) => {
         setPakkausTyyppi(event.target.value);
         console.log(pakkausTyyppi);
     };
+
+        // tyyppi - select komponentin  handleChange
     const handleTyyppiChange = (event) => {
         setTyyppi(event.target.value);
         console.log(tyyppi);
     };
 
+    // Rajattu parhaiden viinien haku hakukriteerien kanssa
     const fetchRajattuHaku = async () => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -48,6 +54,7 @@ const Parhaimmat = () => {
         let c = await response.json();
         setViinit(c);
     }
+
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan viinit tietokannasta
     useEffect(() => {
@@ -56,19 +63,14 @@ const Parhaimmat = () => {
             let response = await fetch("http://localhost:3001/parhaatviinit");
             console.log("fetch called ...", response);
             let c = await response.json();
-            //console.log("res: " + c);
             setViinit(c);
-
         }
         fetchViinit();
-        //console.log(JSON.stringify(viinit))
-
     }, []);
 
     //mapataan viinit tableen
     const vTable = viinit.map((s, i) => {
         return (
-
             <tr key={i} id={s.id}>
                 <td>{i + 1}</td>
                 <td>{s.nimi}</td>
@@ -89,11 +91,11 @@ const Parhaimmat = () => {
                         name="simple-controlled"
                         size='large'
                         readOnly
+                        precision={0.1}
                         value={s.arvio}                       
                     />
                 </td>
             </tr>
-
         )
     });
 
