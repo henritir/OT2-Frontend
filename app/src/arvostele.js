@@ -27,8 +27,6 @@ const Arvostele = () => {
     const [joArvosteltu, setJoArvosteltu] = useState(false); // useState, joka laukaisee popup Dialog-komponentin jos valittua viiniä yrittää arvostella toista kertaa
     const [openSnackBar, setOpenSnackBar] = useState(false); //  useState, joka laukaisee popup SnackBar-komponentin jos viinin arvostelu onnistuu
 
-
-
     // Hakee viinit tietokannasta, tämä effect suoritetaan VAIN yhden kerran
     useEffect(() => {
         const fetchViinit = async () => {
@@ -41,13 +39,15 @@ const Arvostele = () => {
 
     // Vie arvostelun tietokantaan
     const fetchArvostelu = async () => {
+        let aikaleima = new Date().toLocaleString("sv-SV").slice(0, 19).replace("T", " ")
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
             "kayttajanimi": cookies.user,
             "arvio": ratingValue,
-            "viini_id": value.viini_id
+            "viini_id": value.viini_id,
+            "aikaleima": aikaleima
         });
 
         var requestOptions = {
@@ -71,13 +71,15 @@ const Arvostele = () => {
 
     // Vie arvostelun muutoksen tietokantaan
     const fetchMuutaArvostelu = async () => {
+        let aikaleima = new Date().toLocaleString("sv-SV").slice(0, 19).replace("T", " ")
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
             "kayttajanimi": cookies.user,
             "arvio": ratingValue,
-            "viini_id": value.viini_id
+            "viini_id": value.viini_id,
+            "aikaleima": aikaleima
         });
 
         var requestOptions = {
@@ -136,7 +138,7 @@ const Arvostele = () => {
             </IconButton>
         </React.Fragment>
     );
-
+ 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 20}}>
             <Paper elevation={3} style={{width: '70%', backgroundColor: '#f2f2f2'}}>
@@ -174,11 +176,13 @@ const Arvostele = () => {
                             <Rating
                                 name="simple-controlled"
                                 size='large'
+                                precision={0.1}
                                 value={ratingValue}
                                 onChange={(event, newValue) => {
                                     setRatingvalue(newValue);
                                 }}
                             />
+                            <h2>{ratingValue}/5</h2>
                         </Box>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
@@ -210,11 +214,14 @@ const Arvostele = () => {
                                         <Rating
                                             name="simple-controlled"
                                             size='large'
+                                            precision={0.1
+}
                                             value={ratingValue}
                                             onChange={(event, newValue) => {
                                                 setRatingvalue(newValue);
                                             }}
                                         />
+                                        <h2>{ratingValue}/5</h2>
                                     </Box>
                                 </div>
                             </DialogContent>

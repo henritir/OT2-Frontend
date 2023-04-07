@@ -5,7 +5,7 @@ import { Rating } from '@mui/material';
 
 const Etusivu = () => {
 
-    const [topViinit, setTopViinit] = useState([])
+    const [topViinit, setTopViinit] = useState([]) //useState taulukko top 3 viineille 
 
     // Tämä effect suoritetaan VAIN yhden kerran
     //haetaan TOP 3 viinit tietokannasta
@@ -34,6 +34,7 @@ const Etusivu = () => {
                         name="simple-controlled"
                         size='large'
                         readOnly
+                        precision={0.1}
                         value={s.arvio}
                     />
                     <h2>{s.tyyppi}</h2>
