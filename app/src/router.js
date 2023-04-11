@@ -19,17 +19,16 @@ import { Rekisterointi } from "./rekisterointi";
 import image from "./viinikuva.png";
 import { Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { useCookies } from 'react-cookie';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { useCookies } from "react-cookie";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Muokkaus } from "./profiilin_muokkaus";
 
 const RouteApp = () => {
     const [kayttajanimi, setKayttajanimi] = useState("");
     const [salasana, setSalasana] = useState("");
-    const [cookies, setCookie, removeCookie] = useCookies(['user', 'token']);
+    const [cookies, setCookie, removeCookie] = useCookies(["user", "token"]);
     const [kirjautunut, setKirjautunut] = useState(cookies.user);
     const [kirjaudu, setKirjaudu] = useState(false);
-
 
     const kirjauduClicked = () => {
         setKirjaudu(!kirjaudu);
@@ -38,18 +37,18 @@ const RouteApp = () => {
     const kirjautuminen = (result) => {
         console.log(result);
         if (result.includes(kayttajanimi)) {
-            setCookie('user', kayttajanimi, {maxAge:'3600'});
-            setCookie('token', result.slice(kayttajanimi.length + 31),{maxAge:'3600'});
+            setCookie("user", kayttajanimi, { maxAge: "3600" });
+            setCookie("token", result.slice(kayttajanimi.length + 31), {
+                maxAge: "3600",
+            });
             setKirjautunut(kayttajanimi);
         }
-
     };
 
     const kirjauduUlos = () => {
         setKirjautunut("");
-        removeCookie('user');
-        removeCookie('token');
-
+        removeCookie("user");
+        removeCookie("token");
     };
 
     useEffect(() => {
@@ -82,7 +81,6 @@ const RouteApp = () => {
             setSalasana("");
             setKayttajanimi("");
         }
-
     }, [kirjaudu]);
 
     return (
@@ -102,29 +100,29 @@ const RouteApp = () => {
                         {kirjautunut ? (
                             <div>
                                 <Row>
-                                    <Col xs='auto'>
+                                    <Col xs="auto">
                                         <p>{kirjautunut}</p>
                                     </Col>
-                                    <Col md='auto'>
-                                        <Button onClick={() => kirjauduUlos()} variant="outline-secondary">
+                                    <Col md="auto">
+                                        <Button
+                                            onClick={() => kirjauduUlos()}
+                                            variant="outline-secondary"
+                                        >
                                             Kirjaudu ulos
                                         </Button>
-
                                     </Col>
                                     <Col>
-                                        <Button href="/muokkaa" variant="outline-secondary">
-                                        <SettingsIcon/>
-
+                                        <Button
+                                            href="/muokkaa"
+                                            variant="outline-secondary"
+                                        >
+                                            <SettingsIcon />
                                         </Button>
-                                       
-
                                     </Col>
-
                                 </Row>
                             </div>
                         ) : (
                             <div>
-
                                 <Row>
                                     <Col md={3}>
                                         <Form.Control
@@ -160,14 +158,13 @@ const RouteApp = () => {
                                         <Button
                                             variant="outline-success"
                                             href="/rekisterointi"
+                                            data-testid="reki"
                                         >
                                             Rekisteröidy
                                         </Button>
                                     </Col>
                                 </Row>
-
                             </div>
-
                         )}
                     </Navbar.Collapse>
                 </Container>
@@ -189,8 +186,14 @@ const RouteApp = () => {
                             element={<Rekisterointi />}
                         />
                         <Route element={<Suojattu kirjautunut={kirjautunut} />}>
-                            <Route path="/profiili" element={<Profiili token={cookies.token} />} />
-                            <Route path="/muokkaa" element={<Muokkaus token={cookies.token}/>}/>
+                            <Route
+                                path="/profiili"
+                                element={<Profiili token={cookies.token} />}
+                            />
+                            <Route
+                                path="/muokkaa"
+                                element={<Muokkaus token={cookies.token} />}
+                            />
                             <Route
                                 path="/parhaimmat"
                                 element={<Parhaimmat />}

@@ -57,7 +57,7 @@ const Rekisterointi = () => {
             >
                 <div className="signup__container">
                     <br></br>
-                    <h2>Rekisteröidy</h2>
+                    <h2>Rekisteröidy tässä</h2>
                     <form className="signup__form" onSubmit={handleSubmit}>
                         <div>
                             <input
