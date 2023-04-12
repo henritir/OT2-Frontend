@@ -1,4 +1,4 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Table } from "react-bootstrap";
 import maatunnukset from "./maatunnukset.json";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -23,6 +23,7 @@ const Profiili = (props) => {
     const [hinta, setHinta] = useState("");
     const [hintaa, setHintaa] = useState(0);
     const [lahde, setLahde] = useState();
+    const [data,setData] = useState([]);
 
     const hintaluokat = ["Kyykky(<20€/l)", "Keskihintainen(20-53€/l)", "Kallis(53-133€/l)", "Erittäin kallis(>133€/l)"];
     const lahteet = [kyykky, keski, kallis, erittain_kallis];
@@ -34,6 +35,15 @@ const Profiili = (props) => {
     //console.log(maatunnukset[0].argentiina);
 
     const kasittele = (e) => {
+
+        e = e.sort((a,b)=>{
+            if(a.aikaleima < b.aikaleima){
+                return -1;
+            }
+        });
+
+        setData(e);
+
         if (maat.length === 0) {
             console.log(e);
             for (let i = 0; i < Object.keys(e).length; i++) {
@@ -171,6 +181,14 @@ const Profiili = (props) => {
 
     }, []);
 
+    const pvm = (aikaleima)=>{
+        let v = aikaleima.slice(0,4);
+        let kk = aikaleima.slice(5,7);
+        let p = aikaleima.slice(8,10);
+        let klo = aikaleima.slice(11,16)
+        return(klo+"  "+p+"."+kk+"."+v);
+    }
+
 
     return (
         <div style={{ backgroundColor: "lightgray", minHeight: "100vh", textAlign:"left"}}>
@@ -230,6 +248,33 @@ const Profiili = (props) => {
                             value={hintaa}
                         />
                     </Col>
+                </Row>
+                <Row>
+                    <h2>Arviointi historiasi:</h2>
+                    <Table>
+                        <thead>
+                            <tr>
+                            <th>Viini</th>
+                            <th>Valmistusmaa</th>
+                            <th>Tyyppi</th>
+                            <th>€/litra</th>
+                            <th>Arvio</th>
+                            <th>Aikaleima</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((a,i)=>{
+                                return(<tr key={i}>
+                                    <td>{a.nimi}</td>
+                                    <td>{a.valmistusmaa}</td>
+                                    <td>{a.tyyppi}</td>
+                                    <td>{a.litrahinta}</td>
+                                    <td>{a.arvio}</td>
+                                    <td>{pvm(a.aikaleima)}</td>
+                                </tr>)
+                            })}
+                        </tbody>
+                    </Table>
                 </Row>
             </Container>
         </div>
