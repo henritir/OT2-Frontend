@@ -142,21 +142,22 @@ const Arvostele = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 20}}>
             <Paper elevation={3} style={{width: '70%', backgroundColor: '#f2f2f2'}}>
-                <h1>Arvioi viini asteikolla 1-5</h1>
+                <h1 data-testid="asdd">Arvioi viini asteikolla 1-5</h1>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <Autocomplete
                         className='Autocomplete'
                         disablePortal
+                        autoSelect
                         value={value ?? null}
                         onChange={(event, newValue) => {
                             setValue(newValue);
                         }}
-                        id="combo-box-demo"
+                        data-testid="combo-box-demo"
                         getOptionLabel={(option) => option.nimi}
                         options={viinit}
                         sx={{ width: 600 }}
                         renderOption={(props, option) => (
-                            <Box component="li" {...props} key={option.viini_id}>
+                            <Box component="li" {...props} key={option.viini_id} data-testid="options">
                                 {option.nimi}
                             </Box>
                         )}
@@ -170,7 +171,7 @@ const Arvostele = () => {
                         action={snackBarAction}
                     />
                 </div>
-                {value ? (<div>
+                {value ? (<div data-testid="ratingdiv">
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
                         <Box width={300}>
                             <Rating
@@ -186,11 +187,11 @@ const Arvostele = () => {
                         </Box>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                        <Button onClick={() => arvostelebtn()}>
+                        <Button onClick={() => arvostelebtn()} data-testid="arvostelebtn">
                             Arvostele
                         </Button>
                     </div>
-                </div>) : (<div><h1>Valitse viini että voit arvostella</h1></div>)}
+                </div>) : (<div><h1 data-testid="asd">Valitse viini että voit arvostella</h1></div>)}
                 {joArvosteltu ? (
                     <div>
                         <Dialog

@@ -5,13 +5,26 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from "react-bootstrap/Button";
 import Rating from '@mui/material/Rating';
+import Backdrop from '@mui/material/Backdrop';
+import Paper from '@mui/material/Paper';
 
 const Parhaimmat = () => {
 
     const [viinit, setViinit] = useState([]) // useState taulukko parhaille viineille
     const [valmistusMaa, setValmistusMaa] = useState(''); // valmistusmaa select-komponentin value
     const [pakkausTyyppi, setPakkausTyyppi] = useState(''); // pakkausTyyppi select komponentin value
-    const [tyyppi, setTyyppi] = useState(''); // tyyppi select komponentin value
+    const [tyyppi, setTyyppi] = useState('');  // tyyppi select komponentin value
+    const [bdOpen, setbdOpen] = useState(false); // Lisätietojen näyttämisen BackDrop-tilan useState
+
+    // Sulkee backDrop tilan
+    const backDropClose = () => {
+        setbdOpen(false);
+    };
+
+    // Avaa backDrop tilan
+    const backDropOpen = () => {
+        setbdOpen(true);
+    };
 
     // valmistusmaa - select komponentin  handleChange
     const handleApMaaChange = (event) => {
@@ -19,13 +32,13 @@ const Parhaimmat = () => {
         console.log(valmistusMaa);
     };
 
-        // pakkaustyyppi - select komponentin  handleChange
+    // pakkaustyyppi - select komponentin  handleChange
     const handlePakkausTyyppiChange = (event) => {
         setPakkausTyyppi(event.target.value);
         console.log(pakkausTyyppi);
     };
 
-        // tyyppi - select komponentin  handleChange
+    // tyyppi - select komponentin  handleChange
     const handleTyyppiChange = (event) => {
         setTyyppi(event.target.value);
         console.log(tyyppi);
@@ -74,17 +87,9 @@ const Parhaimmat = () => {
             <tr key={i} id={s.id}>
                 <td>{i + 1}</td>
                 <td>{s.nimi}</td>
-                <td>{s.valmistaja}</td>
                 <td>{s.hinta}</td>
                 <td>{s.tyyppi}</td>
-                <td>{s.pakkaustyyppi}</td>
-                <td>{s.kuvaus}</td>
-                <td>{s.erityismaininta}</td>
                 <td>{s.valmistusmaa}</td>
-                <td>{s.alue}</td>
-                <td>{s.vuosikerta}</td>
-                <td>{s.rypaleet}</td>
-                <td>{s.luonnehdinta}</td>
                 <td>{s.alkoholipros}</td>
                 <td>
                     <Rating
@@ -92,10 +97,33 @@ const Parhaimmat = () => {
                         size='large'
                         readOnly
                         precision={0.1}
-                        value={s.arvio}                       
+                        value={s.arvio}
                     />
                 </td>
+                <td><Button onClick={backDropOpen}>Lisätietoja</Button></td>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={bdOpen}
+                    onClick={backDropClose}
+                >
+                    <Paper elevation={3} style={{ width: '70%', backgroundColor: '#f2f2f2' }}>
+                        <h1>{s.nimi}</h1>
+                        <h2>{s.tyyppi}</h2>
+                        <p>Valmistaja: {s.valmistaja}</p>
+                        <p>Hinta: {s.hinta}</p>
+                        <p>Valmistaja: {s.valmistaja}</p>
+                        <p>Pakkaustyyppi: {s.pakkaustyyppi}</p>
+                        <p>Kuvaus: {s.kuvaus}</p>
+                        <p>Luonnehdinta: {s.luonnehdinta}</p>
+                        <p>Erityismaininta: {s.erityismaininta}</p>
+                        <p>Valmistusmaa ja alue: {s.valmistusmaa}, {s.alue}</p>
+                        <p>Vuosikerta: {s.vuosikerta}</p>
+                        <p>Rypäleet: {s.rypaleet}</p>
+                        <p>Alkoholiprosentti: {s.alkoholipros} %</p>
+                    </Paper>
+                </Backdrop>
             </tr>
+
         )
     });
 
@@ -207,25 +235,18 @@ const Parhaimmat = () => {
                 </FormControl>
                 <Button onClick={fetchRajattuHaku}>Päivitä</Button>
             </div>
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>
                 <table className="table table-striped table-dark">
                     <thead>
                         <tr>
                             <th>Sija</th>
                             <th>Nimi</th>
-                            <th>Valmistaja</th>
                             <th>Hinta (€)</th>
                             <th>Tyyppi</th>
-                            <th>Pakkaustyyppi</th>
-                            <th>Kuvaus</th>
-                            <th>Erityismaininta</th>
                             <th>Valmistusmaa</th>
-                            <th>Alue</th>
-                            <th>Vuosikerta</th>
-                            <th>Rypäleet</th>
-                            <th>Luonnehdinta</th>
                             <th>Alkoholiprosentti</th>
                             <th>Arvio</th>
+                            <th>Lisätiedot</th>
                         </tr>
                     </thead>
                     <tbody>
