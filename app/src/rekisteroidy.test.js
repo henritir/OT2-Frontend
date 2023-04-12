@@ -41,6 +41,18 @@ describe("Rekisteröitymis testi", () => {
         expect(
             await screen.findByText("Sinulla on jo tili?")
         ).toBeInTheDocument();
+
+        expect(
+            await screen.findByPlaceholderText(/Syötä sähköposti/i)
+        ).toBeInTheDocument();
+
+        expect(
+            await screen.findByPlaceholderText(/Syötä käyttäjänimi/i)
+        ).toBeInTheDocument();
+
+        expect(
+            await screen.findByPlaceholderText(/Syötä salasana/i)
+        ).toBeInTheDocument();
     });
 
     test("Testaa sähköposti", async () => {
@@ -49,6 +61,10 @@ describe("Rekisteröitymis testi", () => {
         let spostiInput = await screen.findByPlaceholderText(
             /Syötä sähköposti/i
         );
+
+        expect(spostiInput).toBeInvalid();
+
+        userEvent.type(spostiInput, "sa.le");
 
         expect(spostiInput).toBeInvalid();
 
