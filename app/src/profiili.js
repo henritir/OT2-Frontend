@@ -24,6 +24,7 @@ const Profiili = (props) => {
     const [hintaa, setHintaa] = useState(0);
     const [lahde, setLahde] = useState();
     const [data,setData] = useState([]);
+    const [maa, setMaa] = useState("");
 
     const hintaluokat = ["Kyykky(<20€/l)", "Keskihintainen(20-53€/l)", "Kallis(53-133€/l)", "Erittäin kallis(>133€/l)"];
     const lahteet = [kyykky, keski, kallis, erittain_kallis];
@@ -37,7 +38,7 @@ const Profiili = (props) => {
     const kasittele = (e) => {
 
         e = e.sort((a,b)=>{
-            if(a.aikaleima < b.aikaleima){
+            if(a.aikaleima < b.aikaleima){                          //järjetstetään aikaleiman perusteella
                 return -1;
             }
         });
@@ -73,7 +74,7 @@ const Profiili = (props) => {
                 }
 
 
-                if (e[i].litrahinta < 20) {
+                if (e[i].litrahinta < 20) {                                     // eri hintaluokkien arvioiden lisääminen
                     arvioth[0].push(e[i].arvio);
                 }
 
@@ -92,17 +93,17 @@ const Profiili = (props) => {
 
             }
 
-            for (let i = 0; i < arviotm.length; i++) {
-                let summa = 0.0;
+            for (let i = 0; i < arviotm.length; i++) {                      //maakohtaisen ka:n laskeminen
+                let summa = 0.0;    
                 let jakaja = 0;
-                for (let j = 0; j < arviotm[i].length; j++) {
+                for (let j = 0; j < arviotm[i].length; j++) {           
                     summa += arviotm[i][j];
                     jakaja = j + 1;
                 }
                 arviotm[i] = summa / jakaja;
             }
 
-            for (let i = 0; i < arviott.length; i++) {
+            for (let i = 0; i < arviott.length; i++) {                      //tyyppikohtaisen ka:n laskeminen
                 let summa = 0.0;
                 let jakaja = 0;
                 for (let j = 0; j < arviott[i].length; j++) {
@@ -112,7 +113,7 @@ const Profiili = (props) => {
                 arviott[i] = summa / jakaja;
             }
 
-            for (let i = 0; i < arvioth.length; i++) {
+            for (let i = 0; i < arvioth.length; i++) {                  //hintaluokkakohtaisen ka:n laskeminen
                 let summa = 0.0;
                 let jakaja = 0;
                 for (let j = 0; j < arvioth[i].length; j++) {
@@ -131,13 +132,12 @@ const Profiili = (props) => {
             tulos.push([maat[arviotm.indexOf(Math.max.apply(null, arviotm))], Math.max.apply(null, arviotm)]);
             tulos.push([tyypit[arviott.indexOf(Math.max.apply(null, arviott))], Math.max.apply(null, arviott)])
 
-
             setTyyppi(tyypit[arviott.indexOf(Math.max.apply(null, arviott))]);
             setTyyppia(Math.max.apply(null, arviott));
             setHinta(hintaluokat[arvioth.indexOf(Math.max.apply(null, arvioth))]);
             setLahde(lahteet[arvioth.indexOf(Math.max.apply(null, arvioth))]);
             setHintaa(Math.max.apply(null, arvioth));
-
+            setMaa(maat[arviotm.indexOf(Math.max.apply(null,arviotm))]);
 
 
             console.log(tyypit);
@@ -198,6 +198,12 @@ const Profiili = (props) => {
                 <Row className="pt-5">
                     <Col md={6}><h2>Alkuperämaa</h2></Col>
                     <Col md={6}><img src={osoite} style={{ width: "70%" }} alt="lippu" ></img>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}></Col>
+                    <Col md={6}>
+                       <h3>{maa}</h3>
                     </Col>
                 </Row>
                 <Row>

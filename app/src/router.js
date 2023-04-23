@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Routes,
     Route,
@@ -11,6 +12,9 @@ import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { Profiili } from "./profiili";
 import { Parhaimmat } from "./parhaimmat";
 import { Arvostele } from "./arvostele";
@@ -23,12 +27,15 @@ import { useCookies } from "react-cookie";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Muokkaus } from "./profiilin_muokkaus";
 
+
 const RouteApp = () => {
     const [kayttajanimi, setKayttajanimi] = useState("");
     const [salasana, setSalasana] = useState("");
     const [cookies, setCookie, removeCookie] = useCookies(["user", "token"]);
     const [kirjautunut, setKirjautunut] = useState(cookies.user);
     const [kirjaudu, setKirjaudu] = useState(false);
+    const [snackbar, setSnackbar] = useState(false);
+    const [ilmoitus, setIlmoitus] = useState("");
 
     const kirjauduClicked = () => {
         setKirjaudu(!kirjaudu);
@@ -43,6 +50,14 @@ const RouteApp = () => {
             });
             setKirjautunut(kayttajanimi);
         }
+        else if(result==="Väärä salasana!"||result==="Käyttäjää ei löydy"){
+            setIlmoitus("Väärä käyttäjänimi tai salasana");
+            setSnackbar(true);
+        }
+        else {
+            setIlmoitus("Kirjautuminen epäonnistui");
+            setSnackbar(true);
+        }
     };
 
     const kirjauduUlos = () => {
@@ -50,6 +65,26 @@ const RouteApp = () => {
         removeCookie("user");
         removeCookie("token");
     };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar(false);
+    };
+
+    const snackBarAction = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleCloseSnackBar}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     useEffect(() => {
         const fetchKirjaudu = async () => {
@@ -71,7 +106,7 @@ const RouteApp = () => {
             };
 
             fetch("http://localhost:3001/kirjaudu/", requestOptions)
-                .then((response) => response.text())
+                .then(response => response.text())
                 .then((result) => kirjautuminen(result))
                 .catch((error) => console.log("error", error));
         };
@@ -204,6 +239,13 @@ const RouteApp = () => {
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </div>
+                <Snackbar
+                    open={snackbar}
+                    autoHideDuration={5000}
+                    onClose={handleCloseSnackBar}
+                    message={ilmoitus}
+                    action={snackBarAction}
+                />
             </div>
 
             <Navbar bg="secondary" expand="lg">
