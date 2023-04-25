@@ -7,6 +7,12 @@ import kyykky from "./kyykky.PNG";
 import keski from "./keski.PNG";
 import kallis from "./kallis.PNG";
 import erittain_kallis from "./erittain_kallis.PNG";
+import nolla from "./0%.PNG";
+import punkku from "./punkku.PNG";
+import rosee from "./rosee.PNG";
+import skumppa from "./skumppa.PNG";
+import vakevoitu from "./vakevoitu.PNG";
+import valkkari from "./valkkari.PNG";
 import { textAlign } from "@mui/system";
 const Profiili = (props) => {
 
@@ -23,11 +29,13 @@ const Profiili = (props) => {
     const [hinta, setHinta] = useState("");
     const [hintaa, setHintaa] = useState(0);
     const [lahde, setLahde] = useState();
+    const [tkuva, setTkuva] = useState();
     const [data,setData] = useState([]);
     const [maa, setMaa] = useState("");
 
     const hintaluokat = ["Kyykky(<20€/l)", "Keskihintainen(20-53€/l)", "Kallis(53-133€/l)", "Erittäin kallis(>133€/l)"];
     const lahteet = [kyykky, keski, kallis, erittain_kallis];
+    const tyyppikuvat = [nolla, punkku, rosee, skumppa, vakevoitu, valkkari];
 
 
 
@@ -127,17 +135,37 @@ const Profiili = (props) => {
             }
 
             console.log(arvioth.indexOf(Math.max.apply(null, arvioth)));
-
+            
+            let viinityyppi = tyypit[arviott.indexOf(Math.max.apply(null, arviott))];
 
             tulos.push([maat[arviotm.indexOf(Math.max.apply(null, arviotm))], Math.max.apply(null, arviotm)]);
             tulos.push([tyypit[arviott.indexOf(Math.max.apply(null, arviott))], Math.max.apply(null, arviott)])
 
-            setTyyppi(tyypit[arviott.indexOf(Math.max.apply(null, arviott))]);
+            setTyyppi(viinityyppi);
             setTyyppia(Math.max.apply(null, arviott));
             setHinta(hintaluokat[arvioth.indexOf(Math.max.apply(null, arvioth))]);
             setLahde(lahteet[arvioth.indexOf(Math.max.apply(null, arvioth))]);
             setHintaa(Math.max.apply(null, arvioth));
             setMaa(maat[arviotm.indexOf(Math.max.apply(null,arviotm))]);
+            
+            if(viinityyppi==="punaviinit"){
+                setTkuva(punkku);
+            }
+            if(viinityyppi==="kuohuviinit & samppanjat"){
+                setTkuva(skumppa);
+            }
+            if(viinityyppi==="alkoholittomat"){
+                setTkuva(nolla);
+            }
+            if(viinityyppi==="roseeviinit"){
+                setTkuva(rosee);
+            }
+            if(viinityyppi==="valkoviinit"){
+                setTkuva(valkkari);
+            }
+            if(viinityyppi==="Jälkiruokaviinit, väkevöidyt ja muut viinit"){
+                setTkuva(vakevoitu);
+            }
 
 
             console.log(tyypit);
@@ -197,13 +225,14 @@ const Profiili = (props) => {
             <Container fluid>
                 <Row className="pt-5">
                     <Col md={6}><h2>Alkuperämaa</h2></Col>
-                    <Col md={6}><img src={osoite} style={{ width: "70%" }} alt="lippu" ></img>
+                    <Col md={6}>
+                       <h3>{maa}</h3>
                     </Col>
+                        
                 </Row>
                 <Row>
                     <Col md={6}></Col>
-                    <Col md={6}>
-                       <h3>{maa}</h3>
+                    <Col md={6}><img src={osoite} style={{ width: "70%" }} alt="lippu" ></img>
                     </Col>
                 </Row>
                 <Row>
@@ -220,7 +249,17 @@ const Profiili = (props) => {
                 </Row>
                 <Row className="pt-5">
                     <Col md={6}><h2>Tyyppi</h2></Col>
-                    <Col md={6}><h3>{tyyppi}</h3>
+                    <Col md={6}> <h3>{tyyppi}</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}></Col>
+                    <Col md={6}> <img src={tkuva} style={{ Maxwidth: "70%", maxHeight:"300px" }} alt="kuva viinistä" ></img>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}></Col>
+                    <Col md={6}>
                         <Rating
                             name="simple-controlled"
                             precision={0.25}
@@ -228,7 +267,6 @@ const Profiili = (props) => {
                             readOnly
                             value={tyyppia}
                         />
-
                     </Col>
                 </Row>
                 <Row className="pt-5">
@@ -239,7 +277,7 @@ const Profiili = (props) => {
                 </Row>
                 <Row>
                     <Col md={6}></Col>
-                    <Col md={6}><img height="200px" src={lahde} alt="halpa"></img>
+                    <Col md={6}><img height="200px" src={lahde}  alt="halpa"></img>
 
                     </Col>
                 </Row>
@@ -257,7 +295,7 @@ const Profiili = (props) => {
                 </Row>
                 <Row>
                     <h2>Arviointi historiasi:</h2>
-                    <Table>
+                    <Table responsive="md">
                         <thead>
                             <tr>
                             <th>Viini</th>
