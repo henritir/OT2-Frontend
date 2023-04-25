@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Rating from '@mui/material/Rating';
 import Backdrop from '@mui/material/Backdrop';
 import Paper from '@mui/material/Paper';
+import { Col, Container, Row, Table } from "react-bootstrap";
 
 const Parhaimmat = () => {
 
@@ -235,8 +236,8 @@ const Parhaimmat = () => {
                 </FormControl>
                 <Button onClick={fetchRajattuHaku}>Päivitä</Button>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>
-                <table className="table table-striped table-dark">
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Table className="table table-striped table-dark" responsive="lg">
                     <thead>
                         <tr>
                             <th>Sija</th>
@@ -252,8 +253,7 @@ const Parhaimmat = () => {
                     <tbody>
                         {vTable}
                     </tbody>
-
-                </table>
+                </Table>
             </div>
         </div>
     );
