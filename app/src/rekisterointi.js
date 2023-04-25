@@ -4,6 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { Container } from "react-bootstrap";
 
 const Rekisterointi = () => {
     const [sposti, setSposti] = useState("");
@@ -12,6 +13,7 @@ const Rekisterointi = () => {
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const [openSnackBar1, setOpenSnackBar1] = useState(false);
     const [openSnackBar2, setOpenSnackBar2] = useState(false);
+    const border = "12px";
 
     const postRekisterointi = () => {
         fetch("http://localhost:3001/rekisteroidy/", {
@@ -71,22 +73,21 @@ const Rekisterointi = () => {
 
     return (
         <div>
-            <div
+            <Container
+                fluid
                 style={{
-                    minHeight: "20vh",
-                }}
-            ></div>
-            <div
-                style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",
-                    marginLeft: "40%",
-                    marginRight: "40%",
-                    width: "400px",
-                    minHeight: "330px",
+                    paddingTop: "100px",
                 }}
             >
-                <div className="signup__container">
-                    <br></br>
+                <Container
+                    style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        padding: "15px",
+                        borderRadius: "12px",
+                        width: "25%",
+                        minWidth: "200px",
+                    }}
+                >
                     <h2>Rekisteröidy tässä</h2>
                     <form className="signup__form" onSubmit={handleSubmit}>
                         <div>
@@ -96,6 +97,7 @@ const Rekisterointi = () => {
                                 id="sposti"
                                 value={sposti}
                                 placeholder="Syötä sähköposti"
+                                style={{ borderRadius: border }}
                                 required
                                 onChange={(e) => setSposti(e.target.value)}
                             />
@@ -108,6 +110,7 @@ const Rekisterointi = () => {
                                 name="kayttajanimi"
                                 value={kayttajanimi}
                                 placeholder="Syötä käyttäjänimi"
+                                style={{ borderRadius: border }}
                                 required
                                 onChange={(e) =>
                                     setKayttajanimi(e.target.value)
@@ -123,13 +126,19 @@ const Rekisterointi = () => {
                                 minLength={8}
                                 value={salasana}
                                 placeholder="Syötä salasana"
+                                style={{ borderRadius: border }}
                                 required
                                 onChange={(e) => setSalasana(e.target.value)}
                             />
                         </div>
                         <br></br>
                         <div>
-                            <button data-testid="rek">Rekisteröidy</button>
+                            <button
+                                data-testid="rek"
+                                style={{ borderRadius: border }}
+                            >
+                                Rekisteröidy
+                            </button>
                         </div>
                         <div>
                             <p>
@@ -146,8 +155,8 @@ const Rekisterointi = () => {
                             </p>
                         </div>
                     </form>
-                </div>
-            </div>
+                </Container>
+            </Container>
             <Snackbar
                 open={openSnackBar}
                 autoHideDuration={6000}
