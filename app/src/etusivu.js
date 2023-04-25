@@ -53,10 +53,10 @@ const Etusivu = () => {
                 <Row style={{ padding: '20px' }}>
                     <Col style={{ display: 'flex', alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
                         <Paper elevation={3} style={{ width: '80%', backgroundColor: '#f2f2f2', padding: '20px' }}>
-                            <h1>Maistelu_PRO</h1>
-                            <h2>Tervetuloa viininystävien sovellukseen, rekisteröidy ja sukella viinien jännittävään maailmaan!</h2>
-                            <h3>Maistelu_PRO auttaa sinua löytämään viinejä eri ominaisuuksien perusteella, pääset arvioimaan maistelukokemustasi ja sinulle luodaan oma yksilöllinen maisteluprofiilisi.</h3>
-                            <h3>Liity mukaan ja jaa kokemuksesi Maistelu_PRO:n avulla. Kippis!</h3>
+                            <h1>&#127863; Maistelu_PRO &#127863;</h1>
+                            <p>Tervetuloa viininystävien sovellukseen! Rekisteröidy ja sukella viinien jännittävään maailmaan!</p>
+                            <p> Maistelu_PRO auttaa sinua löytämään viinejä eri ominaisuuksien perusteella, pääset arvioimaan maistelukokemustasi ja sinulle luodaan oma yksilöllinen makuprofiilisi. Liity mukaan ja jaa kokemuksesi Maistelu_PRO:n avulla.</p>
+                            <p>Kippis! &#127863;</p>
                         </Paper>
                     </Col>
                 </Row>
